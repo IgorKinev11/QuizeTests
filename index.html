@@ -1,0 +1,648 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#111827">
+  <title>Тесты 6 курс — ГП, 11 семестр</title>
+  <style>
+    :root{
+      --bg:#f4f7fb;--panel:#ffffff;--panel2:#f8fafc;--text:#172033;--muted:#667085;
+      --line:#dfe5ee;--accent:#4f46e5;--accent2:#4338ca;--good:#17864b;--bad:#c43d3d;
+      --warn:#b06b00;--shadow:0 16px 40px rgba(35,46,77,.10);--radius:20px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:linear-gradient(180deg,#eef2ff 0,#f7f9fc 260px,#f4f7fb 100%);color:var(--text);
+      font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+    button,input,textarea,select{font:inherit}
+    button{cursor:pointer}
+    .app{max-width:980px;margin:0 auto;padding:24px 18px 56px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:800}
+    .logo{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;
+      display:grid;place-items:center;box-shadow:0 10px 25px rgba(79,70,229,.25);font-size:18px}
+    .top-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .view{display:none}.view.active{display:block}
+    .hero{background:rgba(255,255,255,.88);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.7);
+      border-radius:28px;padding:34px;box-shadow:var(--shadow);margin-bottom:18px}
+    .eyebrow{display:inline-flex;gap:8px;align-items:center;background:#eef2ff;color:#3730a3;padding:6px 10px;border-radius:999px;
+      font-size:12px;font-weight:800;letter-spacing:.02em}
+    h1{font-size:clamp(30px,6vw,54px);line-height:1.03;margin:16px 0 14px;letter-spacing:-.045em}
+    h2{font-size:24px;line-height:1.2;margin:0 0 14px}
+    h3{font-size:18px;margin:0 0 10px}
+    .lead{font-size:17px;color:var(--muted);max-width:750px;margin:0}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:0 8px 24px rgba(35,46,77,.05)}
+    .mode-card{display:flex;flex-direction:column;min-height:220px}
+    .mode-card p{color:var(--muted);margin:0 0 16px}
+    .mode-card .spacer{flex:1}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}
+    .stat{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:12px}
+    .stat b{display:block;font-size:22px}.stat span{font-size:12px;color:var(--muted)}
+    .btn{border:0;border-radius:13px;padding:12px 16px;font-weight:800;transition:.16s transform,.16s opacity,.16s background}
+    .btn:hover{transform:translateY(-1px)}.btn:active{transform:translateY(0)}
+    .btn.primary{background:var(--accent);color:#fff}.btn.primary:hover{background:var(--accent2)}
+    .btn.secondary{background:#eef2ff;color:#3730a3}
+    .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--text)}
+    .btn.danger{background:#fff0f0;color:#a92c2c;border:1px solid #ffd4d4}
+    .btn.good{background:#eaf8ef;color:#116d3b;border:1px solid #ccebd7}
+    .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+    .field{display:flex;flex-direction:column;gap:7px}.field label{font-size:13px;font-weight:750;color:#475467}
+    input[type="text"],input[type="number"],textarea,select{width:100%;border:1px solid var(--line);border-radius:12px;padding:11px 12px;
+      background:#fff;color:var(--text);outline:none}
+    input:focus,textarea:focus,select:focus{border-color:#a5b4fc;box-shadow:0 0 0 4px #eef2ff}
+    textarea{min-height:110px;resize:vertical}
+    .inline{display:flex;gap:10px;align-items:end;flex-wrap:wrap}
+    .inline .field{flex:1;min-width:160px}
+    .checkrow{display:flex;gap:9px;align-items:center;color:var(--muted);font-size:14px}
+    .checkrow input{width:18px;height:18px}
+    .quiz-shell{max-width:820px;margin:0 auto}
+    .quiz-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:12px}
+    .quiz-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .pill{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 10px;
+      color:var(--muted);font-size:12px;font-weight:750}
+    .progress{height:10px;background:#e8ecf3;border-radius:999px;overflow:hidden;margin-bottom:16px}
+    .progress>div{height:100%;background:linear-gradient(90deg,#4f46e5,#7c3aed);width:0;transition:width .25s}
+    .question-card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:26px;box-shadow:var(--shadow)}
+    .q-number{font-size:12px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+    .q-text{font-size:22px;line-height:1.35;font-weight:800;margin:7px 0 18px}
+    .multi-note{font-size:13px;color:#5b21b6;background:#f5f3ff;border:1px solid #e9d5ff;border-radius:10px;padding:9px 11px;margin:0 0 14px}
+    .options{display:grid;gap:10px}
+    .option{display:grid;grid-template-columns:30px 1fr;gap:11px;align-items:flex-start;width:100%;text-align:left;border:1px solid var(--line);
+      border-radius:14px;background:#fff;padding:13px 14px;color:var(--text);transition:.14s}
+    .option:hover{border-color:#b7c0cf;background:#fbfcff}.option.selected{border-color:#818cf8;background:#f3f4ff}
+    .option.correct{border-color:#85d2a7;background:#edf9f2}.option.wrong{border-color:#efa2a2;background:#fff1f1}
+    .option.missed{border-color:#85d2a7;background:#f5fbf7}
+    .marker{width:24px;height:24px;border:2px solid #c2c9d4;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:900}
+    .option.multi .marker{border-radius:7px}.option.selected .marker{border-color:var(--accent);background:var(--accent);color:#fff}
+    .option.correct .marker,.option.missed .marker{border-color:var(--good);background:var(--good);color:#fff}
+    .option.wrong .marker{border-color:var(--bad);background:var(--bad);color:#fff}
+    .feedback{margin-top:14px;border-radius:13px;padding:12px 14px;font-weight:750;display:none}
+    .feedback.show{display:block}.feedback.good{background:#eaf8ef;color:#116d3b}.feedback.bad{background:#fff0f0;color:#a92c2c}
+    .quiz-actions{display:flex;justify-content:space-between;gap:10px;margin-top:16px;flex-wrap:wrap}
+    .result-card{text-align:center}.score-ring{position:relative;width:150px;height:150px;border-radius:50%;margin:18px auto;display:grid;place-items:center;
+      background:conic-gradient(var(--accent) calc(var(--score)*1%),#e9edf4 0)}
+    .score-ring::before{content:"";width:120px;height:120px;background:#fff;border-radius:50%;position:absolute}
+    .score-ring b{position:relative;font-size:32px}.result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0}
+    .result-grid .stat{background:#fff}
+    .bank-toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+    .bank-toolbar .search{flex:1;min-width:220px}
+    .bank-list{display:grid;gap:10px}
+    .bank-item{background:#fff;border:1px solid var(--line);border-radius:15px;padding:14px 16px;display:grid;grid-template-columns:1fr auto;gap:12px}
+    .bank-item .meta{font-size:12px;color:var(--muted);margin-bottom:4px}.bank-item .text{font-weight:750}
+    .bank-item .actions{display:flex;gap:7px;align-items:center}
+    .bank-item .actions button{padding:8px 10px}
+    .pager{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:16px}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.56);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}
+    .modal-backdrop.show{display:flex}.modal{width:min(760px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:22px;padding:22px;box-shadow:0 30px 80px rgba(0,0,0,.28)}
+    .modal-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:14px}
+    .icon-btn{border:1px solid var(--line);background:#fff;border-radius:10px;width:38px;height:38px;font-size:20px}
+    .editor-options{display:grid;gap:8px;margin-top:10px}.editor-option{display:grid;grid-template-columns:34px 1fr 38px;gap:8px;align-items:center}
+    .editor-option input[type="checkbox"]{width:20px;height:20px}
+    .help{font-size:13px;color:var(--muted)}.divider{height:1px;background:var(--line);margin:18px 0}
+    .toast{position:fixed;right:18px;bottom:18px;max-width:360px;background:#172033;color:#fff;padding:12px 15px;border-radius:12px;
+      box-shadow:0 14px 40px rgba(0,0,0,.22);display:none;z-index:70}.toast.show{display:block}
+    .small{font-size:12px;color:var(--muted)}
+    code{background:#f1f5f9;padding:2px 5px;border-radius:6px}
+    @media(max-width:720px){
+      .app{padding:16px 12px 40px}.hero{padding:24px 20px}.grid{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr 1fr}
+      .question-card{padding:19px 15px}.q-text{font-size:19px}.bank-item{grid-template-columns:1fr}.bank-item .actions{justify-content:flex-end}
+      .result-grid{grid-template-columns:1fr}.topbar{align-items:flex-start}.brand span:last-child{display:none}
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><div class="logo">GP</div><span>Тренажёр тестов</span></div>
+    <div class="top-actions">
+      <button class="btn ghost" id="homeBtn">Главная</button>
+      <button class="btn ghost" id="bankBtn">Банк вопросов</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="view active" id="homeView">
+      <div class="hero">
+        <div class="eyebrow">6 курс · ГП · 11 семестр</div>
+        <h1>Тесты без установки и сервера</h1>
+        <p class="lead">Открывается как обычный файл в браузере. Есть все вопросы из PDF, случайная выборка, вопросы с несколькими правильными ответами, работа над ошибками и редактор банка.</p>
+        <div class="stats">
+          <div class="stat"><b id="totalQuestions">184</b><span>вопроса в банке</span></div>
+          <div class="stat"><b id="attemptsStat">0</b><span>завершённых попыток</span></div>
+          <div class="stat"><b id="bestStat">—</b><span>лучший результат</span></div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card mode-card">
+          <h2>Все вопросы</h2>
+          <p>Идти по банку подряд. Подходит для полного прогона перед зачётом или экзаменом.</p>
+          <div class="spacer"></div>
+          <label class="checkrow"><input type="checkbox" id="shuffleAllOptions" checked> Перемешивать варианты ответов</label>
+          <div style="height:12px"></div>
+          <button class="btn primary" id="startAll">Начать все вопросы</button>
+        </div>
+
+        <div class="card mode-card">
+          <h2>Рандом</h2>
+          <p>Случайные вопросы без повторов внутри попытки.</p>
+          <div class="inline">
+            <div class="field">
+              <label for="randomCount">Сколько вопросов</label>
+              <input type="number" id="randomCount" min="1" value="20">
+            </div>
+          </div>
+          <div style="height:10px"></div>
+          <label class="checkrow"><input type="checkbox" id="shuffleRandomOptions" checked> Перемешивать варианты ответов</label>
+          <div class="spacer"></div>
+          <button class="btn primary" id="startRandom">Запустить рандом</button>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px">
+        <h3>Новые вопросы потом добавляются без правки кода</h3>
+        <p class="lead" style="font-size:15px">В «Банке вопросов» можно добавить один вопрос вручную, массово вставить вопросы в формате с <b>*</b> у правильных ответов, а также импортировать/экспортировать весь банк в JSON.</p>
+      </div>
+    </section>
+
+    <section class="view" id="quizView">
+      <div class="quiz-shell">
+        <div class="quiz-head">
+          <div class="quiz-meta">
+            <span class="pill" id="quizModeLabel">Тест</span>
+            <span class="pill" id="quizProgressLabel">1 / 20</span>
+            <span class="pill" id="quizScoreLabel">Верно: 0</span>
+          </div>
+          <button class="btn ghost" id="quitQuiz">Закончить</button>
+        </div>
+        <div class="progress"><div id="progressBar"></div></div>
+        <div class="question-card">
+          <div class="q-number" id="questionNumber"></div>
+          <div class="q-text" id="questionText"></div>
+          <div class="multi-note" id="multiNote" style="display:none">Здесь несколько правильных ответов — отметь все.</div>
+          <div class="options" id="options"></div>
+          <div class="feedback" id="feedback"></div>
+          <div class="quiz-actions">
+            <button class="btn ghost" id="prevQuestion">Назад</button>
+            <div style="display:flex;gap:8px">
+              <button class="btn primary" id="checkAnswer">Проверить</button>
+              <button class="btn primary" id="nextQuestion" style="display:none">Дальше</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="resultView">
+      <div class="quiz-shell">
+        <div class="card result-card">
+          <div class="eyebrow">Результат</div>
+          <h2 style="margin-top:14px">Попытка завершена</h2>
+          <div class="score-ring" id="scoreRing" style="--score:0"><b id="scorePercent">0%</b></div>
+          <div class="result-grid">
+            <div class="stat"><b id="resultCorrect">0</b><span>верно</span></div>
+            <div class="stat"><b id="resultWrong">0</b><span>ошибок</span></div>
+            <div class="stat"><b id="resultTotal">0</b><span>всего</span></div>
+          </div>
+          <div style="display:flex;justify-content:center;gap:9px;flex-wrap:wrap">
+            <button class="btn primary" id="retryMistakes">Повторить ошибки</button>
+            <button class="btn secondary" id="newRandom">Ещё рандом</button>
+            <button class="btn ghost" id="resultHome">На главную</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="bankView">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap">
+          <div>
+            <h2>Банк вопросов</h2>
+            <p class="lead" style="font-size:14px">Изменения сохраняются в этом браузере. Для резервной копии используй экспорт JSON.</p>
+          </div>
+          <button class="btn primary" id="addQuestion">+ Добавить вопрос</button>
+        </div>
+        <div class="divider"></div>
+        <div class="bank-toolbar">
+          <input class="search" id="bankSearch" type="text" placeholder="Поиск по вопросам и ответам…">
+          <button class="btn secondary" id="bulkAddBtn">Массовая вставка</button>
+          <button class="btn ghost" id="exportBtn">Экспорт JSON</button>
+          <label class="btn ghost" style="display:inline-block">Импорт JSON<input id="importFile" type="file" accept=".json,application/json" hidden></label>
+          <button class="btn danger" id="resetBank">Сбросить к PDF</button>
+        </div>
+        <div class="small" id="bankCount"></div>
+        <div style="height:10px"></div>
+        <div class="bank-list" id="bankList"></div>
+        <div class="pager">
+          <button class="btn ghost" id="prevPage">←</button>
+          <span class="small" id="pageLabel"></span>
+          <button class="btn ghost" id="nextPage">→</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="modal-backdrop" id="editorBackdrop">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="editorTitle">Добавить вопрос</h2>
+      <button class="icon-btn" data-close="editorBackdrop">×</button>
+    </div>
+    <div class="field">
+      <label>Текст вопроса</label>
+      <textarea id="editText" placeholder="Введите вопрос"></textarea>
+    </div>
+    <div class="divider"></div>
+    <div style="display:flex;justify-content:space-between;gap:10px;align-items:center">
+      <h3 style="margin:0">Варианты ответа</h3>
+      <button class="btn secondary" id="addOption">+ Вариант</button>
+    </div>
+    <p class="help">Галочкой отметь правильный ответ. Правильных вариантов может быть несколько.</p>
+    <div class="editor-options" id="editorOptions"></div>
+    <div class="divider"></div>
+    <div style="display:flex;justify-content:flex-end;gap:8px">
+      <button class="btn ghost" data-close="editorBackdrop">Отмена</button>
+      <button class="btn primary" id="saveQuestion">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="bulkBackdrop">
+  <div class="modal">
+    <div class="modal-head">
+      <h2>Массовая вставка</h2>
+      <button class="icon-btn" data-close="bulkBackdrop">×</button>
+    </div>
+    <p class="help">Формат такой же, как в исходном PDF: номер вопроса с точкой, варианты с «1)», а после правильного ответа — <b>*</b>. Несколько звёздочек = несколько правильных ответов.</p>
+    <textarea id="bulkText" style="min-height:300px" placeholder="1. Пример вопроса
+1) Неверный вариант
+2) Правильный вариант*
+
+2. Вопрос с несколькими ответами
+1) Правильно*
+2) Неверно
+3) Тоже правильно*"></textarea>
+    <div class="divider"></div>
+    <div style="display:flex;justify-content:flex-end;gap:8px">
+      <button class="btn ghost" data-close="bulkBackdrop">Отмена</button>
+      <button class="btn primary" id="parseBulk">Добавить в банк</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const DEFAULT_QUESTIONS = [{"id":"src-1-1","number":1,"numberVariant":1,"text":"Автор концепции сбалансированного питания:","options":[{"text":"А.А.Покровский","correct":true},{"text":"М.М.Экземплярский","correct":false},{"text":"О.П.Молчанова","correct":false}],"origin":"pdf"},{"id":"src-2-1","number":2,"numberVariant":1,"text":"Ученый, впервые предложивший научное определение «пищевых веществ» и обосновавший нормы питания работников, занятых физическим трудом","options":[{"text":"К. Фойт","correct":true},{"text":"М. Петтенкофер","correct":false},{"text":"М. Рубнер","correct":false}],"origin":"pdf"},{"id":"src-3-1","number":3,"numberVariant":1,"text":"Автор первого отечественного руководства по пищевой санитарии с элементами гигиены питания:","options":[{"text":"С.Ф. Хотовицкий","correct":true},{"text":"М.В. Ломоносов","correct":false},{"text":"В.В. Пашутин","correct":false}],"origin":"pdf"},{"id":"src-4-1","number":4,"numberVariant":1,"text":"Один из основоположников отечественной науки о питании, создатель Института питания","options":[{"text":"М.Н.Шатерников","correct":true},{"text":"Д.П.Диатроптов","correct":false},{"text":"А.В.Мольков","correct":false}],"origin":"pdf"},{"id":"src-5-1","number":5,"numberVariant":1,"text":"Ученый и педагог, впервые предложивший название «гигиена питания» для обозначения отрасли науки и академической дисциплины:","options":[{"text":"А.В. Рейслер","correct":true},{"text":"А.А. Хрусталев","correct":false},{"text":"К.С. Петровский","correct":false}],"origin":"pdf"},{"id":"src-6-1","number":6,"numberVariant":1,"text":"Энергия суточного рациона взрослого здорового человека должна","options":[{"text":"полностью компенсировать основной обмен, пищевой термогенез и затраты на умственную и физическую деятельность","correct":true},{"text":"полностью компенсировать основной обмен, пищевой термогенез и частично затраты на умственную и физическую деятельность","correct":false},{"text":"полностью компенсировать затраты на умственную и физическую деятельность и частично основной обмен","correct":false}],"origin":"pdf"},{"id":"src-7-1","number":7,"numberVariant":1,"text":"Доля белков животного происхождения от общего количества белков для взрослых должна составлять","options":[{"text":"50%","correct":true},{"text":"35%","correct":false},{"text":"45%","correct":false},{"text":"60%","correct":false}],"origin":"pdf"},{"id":"src-8-1","number":8,"numberVariant":1,"text":"Окисление 1 г жира в организме человека дает","options":[{"text":"9 ккал","correct":true},{"text":"6 ккал","correct":false},{"text":"4 ккал","correct":false},{"text":"8 ккал","correct":false}],"origin":"pdf"},{"id":"src-9-1","number":9,"numberVariant":1,"text":"К увеличению риска развития остеопороза приводит недостаток витамина","options":[{"text":"D","correct":true},{"text":"А","correct":false},{"text":"В","correct":false},{"text":"С","correct":false},{"text":"Е","correct":false}],"origin":"pdf"},{"id":"src-10-1","number":10,"numberVariant":1,"text":"Дифференциация потребностей в энергии и пищевых веществах в зависимости от пола начинается с","options":[{"text":"11 лет","correct":true},{"text":"7 лет","correct":false},{"text":"1 лет","correct":false},{"text":"18 лет","correct":false}],"origin":"pdf"},{"id":"src-11-1","number":11,"numberVariant":1,"text":"В зависимости от величины энерготрат взрослое трудоспособное население дифференцировано на","options":[{"text":"4 группы","correct":true},{"text":"3 группы","correct":false},{"text":"5 групп","correct":false},{"text":"6 групп","correct":false}],"origin":"pdf"},{"id":"src-12-1","number":12,"numberVariant":1,"text":"Продукт с высоким гликемическим индексом может вызвать","options":[{"text":"резкое повышение уровня сахара","correct":true},{"text":"снижение уровня сахара","correct":false},{"text":"повышение уровня щелочной фосфатазы","correct":false}],"origin":"pdf"},{"id":"src-13-1","number":13,"numberVariant":1,"text":"Усвоению железа в организме способствует витамин","options":[{"text":"С","correct":true},{"text":"А","correct":false},{"text":"Е","correct":false},{"text":"Д","correct":false}],"origin":"pdf"},{"id":"src-14-1","number":14,"numberVariant":1,"text":"Основным источником витамина Е в питании является","options":[{"text":"растительное масло","correct":true},{"text":"молочные продукты","correct":false},{"text":"фрукты","correct":false}],"origin":"pdf"},{"id":"src-15-1","number":15,"numberVariant":1,"text":"Нарушение обмена кальция и фосфора в организме происходит при дефиците витамина","options":[{"text":"Д","correct":true},{"text":"А","correct":false},{"text":"С","correct":false},{"text":"Е","correct":false}],"origin":"pdf"},{"id":"src-16-1","number":16,"numberVariant":1,"text":"Коэффициент физической активности отражает соотношение","options":[{"text":"общих энерготрат к величине основного обмена","correct":true},{"text":"энерготрат на физическую и умственную деятельность","correct":false}],"origin":"pdf"},{"id":"src-17-1","number":17,"numberVariant":1,"text":"Витамины, обладающие антиоксидантной активностью","options":[{"text":"А, Е, β-каротин, С, биофлавоноиды","correct":true},{"text":"А, Е, Д, биотин","correct":false},{"text":"В1 ,В2 ,РР,С,К","correct":false}],"origin":"pdf"},{"id":"src-18-1","number":18,"numberVariant":1,"text":"Окисление 1 г белка в организме дает","options":[{"text":"4 ккал","correct":true},{"text":"3 ккал","correct":false},{"text":"5 ккал","correct":false},{"text":"6 ккал","correct":false}],"origin":"pdf"},{"id":"src-19-1","number":19,"numberVariant":1,"text":"В обмене углеводов участвует витамин","options":[{"text":"В1","correct":true},{"text":"А","correct":false},{"text":"С","correct":false},{"text":"Е","correct":false}],"origin":"pdf"},{"id":"src-20-1","number":20,"numberVariant":1,"text":"Определение темновой адаптации характеризует обеспеченность организма витамином","options":[{"text":"А","correct":true},{"text":"Д","correct":false},{"text":"С","correct":false}],"origin":"pdf"},{"id":"src-21-1","number":21,"numberVariant":1,"text":"Параметры сбалансированности энергонесущих нутриентов (в % от энергоценности рациона):","options":[{"text":"белки – 12-14%, жиры – не более 30%, углеводы – 56-58%","correct":true},{"text":"белки – 5-10%, жиры – не менее 30%, углеводы – 60-65%","correct":false},{"text":"белки – не более 20%, жиры – не менее 40%, углеводы – не менее 40%","correct":false}],"origin":"pdf"},{"id":"src-22-1","number":22,"numberVariant":1,"text":"Физиологическая потребность в пищевых волокнах для взрослого человека составляет _______ г в сутки","options":[{"text":"20-25","correct":true},{"text":"10-22","correct":false},{"text":"5-10","correct":false}],"origin":"pdf"},{"id":"src-23-1","number":23,"numberVariant":1,"text":"Пищевой статус (определение):","options":[{"text":"комплекс показателей, отражающий адекватность фактического питания реальным потребностям человека","correct":true},{"text":"комплекс показателей фактического питания и физического развития организма","correct":false},{"text":"комплекс показателей физического развития","correct":false}],"origin":"pdf"},{"id":"src-24-1","number":24,"numberVariant":1,"text":"Интервал индекса массы тела взрослого человека, характеризующий нормальную массу тела:","options":[{"text":"18,5-25","correct":true},{"text":"16-18","correct":false},{"text":"25,1-30","correct":false},{"text":"30,1-40","correct":false}],"origin":"pdf"},{"id":"src-25-1","number":25,"numberVariant":1,"text":"При оценке фактического питания изучают:","options":[{"text":"продуктовый набор, нутриентный состав, сбалансированность, режим питания, разнообразие пищевого рациона","correct":true},{"text":"продуктовый набор, нутриентный состав, симптомы нутриентного дисбаланса","correct":false},{"text":"условия приема пищи, режим питания, стоимость продовольственной корзины","correct":false}],"origin":"pdf"},{"id":"src-26-1","number":26,"numberVariant":1,"text":"Незаменимые липидные соединения в питании человека:","options":[{"text":"линолевая и линоленовая жирные кислоты","correct":true},{"text":"олеиновая и стеариновая жирные кислоты","correct":false},{"text":"фосфолипиды, холестерин, лауриновая жирная кислота","correct":false}],"origin":"pdf"},{"id":"src-27-1","number":27,"numberVariant":1,"text":"Гипохолестеринемическим эффектом обладают","options":[{"text":"ПНЖК","correct":true},{"text":"β –фитостерин","correct":true},{"text":"фосфолипиды","correct":false},{"text":"НЖК","correct":false}],"origin":"pdf"},{"id":"src-28-1","number":28,"numberVariant":1,"text":"Согласно теории рационального питания, все пищевые вещества делятся на:","options":[{"text":"незаменимые (эссенциальные) и заменимые","correct":true},{"text":"перевариваемые и неперевариваемые","correct":false},{"text":"усваиваемые и неусваиваемые","correct":false},{"text":"ненормируемые и нормируемые","correct":false}],"origin":"pdf"},{"id":"src-29-1","number":29,"numberVariant":1,"text":"Индивидуальная потребность в конкретном нутриенте:","options":[{"text":"определяется как сумма величины физиологической потребности и дополнительных адаптационных затрат","correct":true},{"text":"равна величине минимальной физиологической потребности","correct":false},{"text":"больше физиологической потребности на величину кулинарных потерь","correct":false}],"origin":"pdf"},{"id":"src-30-1","number":30,"numberVariant":1,"text":"Биомаркеры дисбаланса жиров в питании","options":[{"text":"фракции липопротеидов и триглицериды в сыворотке крови","correct":true},{"text":"билирубин, щелочная фосфатаза в сыворотке крови","correct":false},{"text":"желчные кислоты, липидные фракции в кале","correct":false}],"origin":"pdf"},{"id":"src-31-1","number":31,"numberVariant":1,"text":"Симптомы и биомаркер дефицита аскорбиновой кислоты:","options":[{"text":"фолликулярный гиперкератоз, себорея лица, кровь при чистке зубов, концентрация витамина С в суточной моче менее 20 мг","correct":true},{"text":"ангулярный стоматит, сухость кожи, кровь при чистке зубов, концентрация витамина С в суточной моче менее 30 мг","correct":false},{"text":"цилиарная инъекция, хейлоз, снижение сумеречного зрения, концентрация витамина С в суточной моче менее 20 мг","correct":false}],"origin":"pdf"},{"id":"src-32-1","number":32,"numberVariant":1,"text":"Укажите биомаркеры, требующие диагностического определения при обнаружении следующей клинической картины: объективно - ангулярный стоматит, хейлоз, гипертрофия сосочков языка, жалобы на болезненность языка во время еды:","options":[{"text":"ПАЛФ-эффект эритроцитов и N-метилникотинамид в моче","correct":true},{"text":"ФАД-эффект и ТДФ-эффект эритроцитов","correct":false},{"text":"ФАД-эффект и ПАЛФ-эффект эритроцитов","correct":false}],"origin":"pdf"},{"id":"src-33-1","number":33,"numberVariant":1,"text":"Биомаркер дисбаланса моно- и дисахаридов в питании здорового человека:","options":[{"text":"концентрация гликозилированнго гемоглобина А1с","correct":true},{"text":"динамика глюкозы в сыворотке крови при проведении нагрузочных проб","correct":false},{"text":"концентрация глюкозы в сыворотке крови натощак","correct":false}],"origin":"pdf"},{"id":"src-34-1","number":34,"numberVariant":1,"text":"Симптомы дефицита рибофлавина:","options":[{"text":"ангулярный стоматит, хейлоз, цилиарная инъекция","correct":true},{"text":"фолликулярный гиперкератоз, сухость кожи, кровь при чистке зубов","correct":false},{"text":"кровь при чистке зубов, хейлоз, гипертрофия сосочков языка","correct":false}],"origin":"pdf"},{"id":"src-35-1","number":35,"numberVariant":1,"text":"Методы оценки фактического питания организованных групп населения:","options":[{"text":"анализ меню-раскладок","correct":true},{"text":"лабораторный","correct":true},{"text":"анкетный","correct":false},{"text":"воспроизведения","correct":false}],"origin":"pdf"},{"id":"src-36-1","number":36,"numberVariant":1,"text":"Рациональное питание (определение):","options":[{"text":"питание, организованное в соответствии с реальными потребностями человека и обеспечивающее оптимальный уровень обмена веществ","correct":true},{"text":"питание, обеспечивающее минимальный физиологический уровень поступления в организм пищевых веществ и энергии","correct":false},{"text":"питание, организованное в соответствии с рекомендуемым режимом и условиями","correct":false}],"origin":"pdf"},{"id":"src-37-1","number":37,"numberVariant":1,"text":"Нерегулируемые энерготраты это:","options":[{"text":"расход энергии на основной обмен и специфически-динамическое действие пищи","correct":true},{"text":"расход энергии в процессе трудовой деятельности","correct":false},{"text":"расход энергии на специфически-динамическое действие пищи и в процессе бытовой деятельности","correct":false},{"text":"расход энергии в процессе бытовой деятельности","correct":false}],"origin":"pdf"},{"id":"src-38-1","number":38,"numberVariant":1,"text":"Регулируемые энерготраты это:","options":[{"text":"расход энергии на умственную и физическую активность","correct":true},{"text":"расход энергии на основной обмен","correct":false},{"text":"расход энергии на специфически-динамическое действие пищи","correct":false},{"text":"расход энергии на умственную и физическую активность и основной обмен","correct":false}],"origin":"pdf"},{"id":"src-39-1","number":39,"numberVariant":1,"text":"Антиокислители применяются","options":[{"text":"для предотвращения порчи жира","correct":true},{"text":"для задержания роста микробов","correct":false},{"text":"для улучшения вкусовых свойств","correct":false},{"text":"для улучшения консистенции","correct":false}],"origin":"pdf"},{"id":"src-40-1","number":40,"numberVariant":1,"text":"Афлатоксин М1 регламентируется в","options":[{"text":"молоке","correct":true},{"text":"мясопродуктах","correct":false},{"text":"морской рыбе","correct":false},{"text":"зерновых","correct":false}],"origin":"pdf"},{"id":"src-41-1","number":41,"numberVariant":1,"text":"Отличительной особенностью белка молока является связь его с солями","options":[{"text":"кальция","correct":true},{"text":"железа","correct":false},{"text":"магния","correct":false},{"text":"калия","correct":false}],"origin":"pdf"},{"id":"src-42-1","number":42,"numberVariant":1,"text":"Овощи и плоды в питании человека являются источниками","options":[{"text":"углеводов","correct":true},{"text":"пищевых волокон","correct":true},{"text":"витаминов","correct":true},{"text":"белков","correct":false}],"origin":"pdf"},{"id":"src-43-1","number":43,"numberVariant":1,"text":"Потребление добавленных сахаров для детей и взрослых не должно превышать ________% от калорийности суточного рациона","options":[{"text":"10","correct":true},{"text":"20","correct":false},{"text":"30","correct":false}],"origin":"pdf"},{"id":"src-44-1","number":44,"numberVariant":1,"text":"Особенности рыбной продукции холодного копчения","options":[{"text":"низкая влажность и высокое содержание соли","correct":true},{"text":"высокая влажность и низкое содержание соли","correct":false},{"text":"высокая влажность и высокое содержание соли","correct":false}],"origin":"pdf"},{"id":"src-45-1","number":45,"numberVariant":1,"text":"Партия пшеничного хлеба с липким, темным мякишем и запахом валерианы подлежит","options":[{"text":"уничтожению","correct":true},{"text":"списанию на технологическую переработку","correct":false},{"text":"списанию на корм животным","correct":false}],"origin":"pdf"},{"id":"src-46-1","number":46,"numberVariant":1,"text":"Причинным фактором химического бомбажа баночных консервов является","options":[{"text":"действие кислой среды продукта на стенки банки","correct":true},{"text":"развитие остаточной микрофлоры","correct":false},{"text":"нарушение герметичности банки","correct":false}],"origin":"pdf"},{"id":"src-47-1","number":47,"numberVariant":1,"text":"Безопасность пищевых продуктов определяется содержанием","options":[{"text":"ксенобиотиков","correct":true},{"text":"пищевых веществ","correct":false},{"text":"воды","correct":false}],"origin":"pdf"},{"id":"src-48-1","number":48,"numberVariant":1,"text":"К критически значимым для здоровья населения пищевым веществам относятся","options":[{"text":"пищевая соль","correct":true},{"text":"добавленные сахара","correct":true},{"text":"жиры, в т.ч. содержащие трансизомерные жирные кислоты","correct":true},{"text":"крахмал","correct":false}],"origin":"pdf"},{"id":"src-49-1","number":49,"numberVariant":1,"text":"Использование фосфатов при производстве колбас улучшает их","options":[{"text":"консистенцию","correct":true},{"text":"вкус","correct":false},{"text":"цвет","correct":false}],"origin":"pdf"},{"id":"src-50-1","number":50,"numberVariant":1,"text":"Полное освобождение объекта от радионуклидов происходит за","options":[{"text":"10 периодов полураспада","correct":true},{"text":"год","correct":false},{"text":"10 лет","correct":false},{"text":"один период полураспада","correct":false}],"origin":"pdf"},{"id":"src-51-1","number":51,"numberVariant":1,"text":"Основной путь поступления радионуклидов в организм человека, проживающего на загрязненной территории","options":[{"text":"пищевой","correct":true},{"text":"аэрозольный","correct":false},{"text":"водный","correct":false},{"text":"кожно-резорбтивный","correct":false}],"origin":"pdf"},{"id":"src-52-1","number":52,"numberVariant":1,"text":"Молоко не может полностью удовлетворять потребность организма ребенка после 4-х месяцев в","options":[{"text":"железе","correct":true},{"text":"фосфоре","correct":false},{"text":"марганце","correct":false},{"text":"фторе","correct":false},{"text":"кобальте","correct":false}],"origin":"pdf"},{"id":"src-53-1","number":53,"numberVariant":1,"text":"Мясо является основным источником макро и микронутриентов, кроме","options":[{"text":"углеводов","correct":true},{"text":"белков","correct":false},{"text":"жиров","correct":false},{"text":"минеральных веществ","correct":false}],"origin":"pdf"},{"id":"src-54-1","number":54,"numberVariant":1,"text":"Заключение по партии свинины, пораженной трихинеллезом","options":[{"text":"признать непригодной для питания","correct":true},{"text":"признать пригодной для целей питания без ограничений","correct":false},{"text":"признать условно годной для питания после обезвреживания","correct":false}],"origin":"pdf"},{"id":"src-55-1","number":55,"numberVariant":1,"text":"Особенности рыбной продукции горячего копчения","options":[{"text":"высокая влажность и низкое содержание соли","correct":true},{"text":"низкая влажность и высокое содержание соли","correct":false},{"text":"высокая влажность и высокое содержание соли","correct":false}],"origin":"pdf"},{"id":"src-56-1","number":56,"numberVariant":1,"text":"Продукты переработки зерна дефицитны по витаминам","options":[{"text":"группы В","correct":true},{"text":"группы Е","correct":false}],"origin":"pdf"},{"id":"src-57-1","number":57,"numberVariant":1,"text":"Продукты твердой консистенции могут маркироваться как источники пищевых волокон, если содержат ПВ не менее ________ г в 100 г продукции","options":[{"text":"3","correct":true},{"text":"5","correct":false},{"text":"10","correct":false}],"origin":"pdf"},{"id":"src-58-1","number":58,"numberVariant":1,"text":"Причинным фактором микробиологического бомбажа баночных консервов является","options":[{"text":"развитие остаточной микрофлоры","correct":true},{"text":"нарушение герметичности банки","correct":false},{"text":"действие кислой среды продукта на стенки банки","correct":false}],"origin":"pdf"},{"id":"src-59-1","number":59,"numberVariant":1,"text":"Качество белкового компонента пищевых продуктов отражает понятие","options":[{"text":"биологическая ценность","correct":true},{"text":"пищевая ценность","correct":false},{"text":"биологическая эффективность","correct":false},{"text":"энергетическая ценность","correct":false}],"origin":"pdf"},{"id":"src-60-1","number":60,"numberVariant":1,"text":"Продукты твердой консистенции могут маркироваться как источники витаминов и минеральных веществ, если содержание данных нутриентов в продукции составляет не менее ________ % средней суточной потребности взрослого человека","options":[{"text":"15","correct":true},{"text":"5","correct":false},{"text":"10","correct":false}],"origin":"pdf"},{"id":"src-61-1","number":61,"numberVariant":1,"text":"Пищевая продукция, вырабатываемая из или с использованием генно-инженерно модифицированных организмов (ГМО) и находящаяся в обороте в Российской Федерации:","options":[{"text":"должна иметь свидетельство о государственной регистрации и маркировку при содержании ГМО более 0,9%","correct":true},{"text":"должна подвергаться процедуре обязательного декларирования соответствия и маркироваться при содержании ГМО более 5%","correct":false}],"origin":"pdf"},{"id":"src-62-1","number":62,"numberVariant":1,"text":"Продолжительность действия бактерицидных свойств молока зависит от","options":[{"text":"температуры охлаждения","correct":true},{"text":"исходной бактериальной обсемененности","correct":false},{"text":"автоматизации и механизации процесса получения молока","correct":false},{"text":"длительности хранения","correct":false},{"text":"условий качества очистки в процессе фильтрации","correct":false}],"origin":"pdf"},{"id":"src-63-1","number":63,"numberVariant":1,"text":"Заключение по партии мяса животных, больных сибирской язвой","options":[{"text":"не пригодно для питания, подлежит уничтожению","correct":true},{"text":"не пригодно для питания, подлежит технической утилизации","correct":false},{"text":"не пригодно для питания, подлежит списанию на корм скоту","correct":false},{"text":"условно годно для питания после тщательной тепловой обработки","correct":false}],"origin":"pdf"},{"id":"src-64-1","number":64,"numberVariant":1,"text":"Рыба может стать причиной возникновения у человека следующих гельминтозов:","options":[{"text":"дифиллоботриоза","correct":true},{"text":"описторхоза","correct":true},{"text":"тениидоза","correct":false},{"text":"трихинеллеза","correct":false}],"origin":"pdf"},{"id":"src-65-1","number":65,"numberVariant":1,"text":"Наибольшее количество витаминов группы В содержится в муке","options":[{"text":"75% выхода","correct":true},{"text":"10% выхода","correct":false},{"text":"25% выхода","correct":false}],"origin":"pdf"},{"id":"src-66-1","number":66,"numberVariant":1,"text":"Патогенные микроорганизмы, которые должны отсутствовать в 25 граммах молочных и мясных продуктов:","options":[{"text":"сальмонеллы, листерии","correct":true},{"text":"стафилококки, клостридии","correct":false},{"text":"шигеллы, иерсинии","correct":false}],"origin":"pdf"},{"id":"src-67-1","number":67,"numberVariant":1,"text":"Способ тепловой кулинарной обработки, способствующий максимальной деконтаминации продукта:","options":[{"text":"варка","correct":true},{"text":"тушение","correct":false},{"text":"жарка","correct":false},{"text":"запекание","correct":false}],"origin":"pdf"},{"id":"src-68-1","number":68,"numberVariant":1,"text":"Укажите документ, устанавливающий требования к порядку проведения дезинсекционных, дератизационных и дезинфекционных работ в различных организациях, в т.ч. на пищевых объектах","options":[{"text":"СанПиН 3.3686-21 «Санитарно-эпидемиологические требования по профилактике инфекционных болезней»","correct":true},{"text":"СанПиН 1.2.3685-21 «Гигиенические нормативы и требования к обеспечению безопасности и (или) безвредности для человека факторов среды обитания»","correct":false},{"text":"ТР ТС 021/2011 «О безопасности пищевой продукции»","correct":false}],"origin":"pdf"},{"id":"src-69-1","number":69,"numberVariant":1,"text":"Минеральный состав мясных продуктов характеризуется:","options":[{"text":"высоким содержанием железа, фосфора, цинка, калия","correct":true},{"text":"высоким содержанием кальция, железа, магния, калия","correct":false},{"text":"низким содержанием кальция, железа, магния, калия","correct":false},{"text":"низким содержанием железа, фосфора, цинка, калия","correct":false}],"origin":"pdf"},{"id":"src-70-1","number":70,"numberVariant":1,"text":"Яйца в питании служат источниками:","options":[{"text":"полноценного белка, лецитина, железа, витаминов В2, А","correct":true},{"text":"полноценного белка, ПНЖК, кальция, витаминов В1, Е","correct":false},{"text":"полноценного белка, МНЖК, калия, витаминов В6, К","correct":false}],"origin":"pdf"},{"id":"src-71-1","number":71,"numberVariant":1,"text":"Пищевые технологии, снижающие концентрацию фузариотоксинов:","options":[{"text":"переработка зерна на муку, крупу, крахмал","correct":true},{"text":"экструзивное производство","correct":false},{"text":"пивное производство","correct":false},{"text":"выпекание хлеба","correct":false}],"origin":"pdf"},{"id":"src-72-1","number":72,"numberVariant":1,"text":"Биологическая ценность продукта:","options":[{"text":"показатель качества белка - степень утилизации белкового азота организмом","correct":true},{"text":"показатель качества жира - степень усвоения жирных кислот","correct":false},{"text":"показатель сбалансированности витаминов - процент содержания витаминов от величины их физиологической потребности","correct":false},{"text":"показатель сбалансированности микроэлементов - процент содержания микроэлементов от величины их физиологической потребности","correct":false}],"origin":"pdf"},{"id":"src-73-1","number":73,"numberVariant":1,"text":"Хранение пищевых продуктов и блюд в холодильнике при температуре 4±2°С:","options":[{"text":"стабилизирует количество мезофильных микроорганизмов","correct":true},{"text":"препятствует токсинообразованию","correct":true},{"text":"приводит к гибели микроорганизмов","correct":false},{"text":"приводит к инактивации токсинов","correct":false}],"origin":"pdf"},{"id":"src-74-1","number":74,"numberVariant":1,"text":"Содержание гистамина контролируется в","options":[{"text":"рыбе семейств лососевых, скумбриевых, тунцовых, сельдевых","correct":true},{"text":"рыбе семейств карповых, частиковых, осетровых","correct":false},{"text":"говядине, баранине, свинине","correct":false},{"text":"курице, индюшке, утке","correct":false}],"origin":"pdf"},{"id":"src-75-1","number":75,"numberVariant":1,"text":"Биологически активные добавки к пище (определение):","options":[{"text":"природные (идентичные природным) компоненты, предназначенные для употребления одновременно с пищей или введения в состав пищевых продуктов с целью обогащения рациона дефицитными нутриентами, биологически активными соединениями, пробиотиками и пребиотиками","correct":true},{"text":"компоненты, идентичные природным, предназначенные для употребления одновременно с пищей с целью придания рациону лечебной направленности за счет увеличения в нем нутриентов выше физиологической потребности","correct":false},{"text":"искусственные компоненты, предназначенные для введения в состав пищевых продуктов с целью улучшения органолептических свойств, продления сроков хранения, оптимизации технологических процессов","correct":false}],"origin":"pdf"},{"id":"src-76-1","number":76,"numberVariant":1,"text":"Основные причины значительного накопления (за счет интенсивного размножения) бактерий в пищевых продуктах:","options":[{"text":"несоблюдение температурного режима и сроков годности, несоблюдение установленной технологии","correct":true},{"text":"микробное загрязнение первичного продовольственного сырья и готовой продукции","correct":false},{"text":"несоблюдение товарного соседства при хранении продуктов и нарушение правил личной гигиены персоналом пищевого объекта","correct":false}],"origin":"pdf"},{"id":"src-77-1","number":77,"numberVariant":1,"text":"Наиболее жесткие микробиологические нормативы у молока:","options":[{"text":"после завершения пастеризации на молокозаводе","correct":true},{"text":"при приемке на молокозавод","correct":false},{"text":"в обороте","correct":false}],"origin":"pdf"},{"id":"src-78-1","number":78,"numberVariant":1,"text":"Регламент применения синтетических и полимерных материалов, контактирующих с пищевыми продуктами, не учитывает:","options":[{"text":"объем контактирующей пищевой продукции","correct":true},{"text":"вид контактирующей пищевой продукции","correct":false},{"text":"температуру контактирующей пищевой продукции","correct":false},{"text":"кратность использования контактирующих изделий и материалов","correct":false}],"origin":"pdf"},{"id":"src-79-1","number":79,"numberVariant":1,"text":"Укажите документ, содержащий перечень пестицидов, разрешенных к применению на территории РФ, и гигиенические нормативы содержания пестицидов в объектах окружающей среды","options":[{"text":"СанПиН 1.2.3685-21 «Гигиенические нормативы и требования к обеспечению безопасности и (или) безвредности для человека факторов среды обитания»","correct":true},{"text":"СанПиН 2.1.3684-21 «Санитарно-эпидемиологические требования к содержанию территорий городских и сельских поселений, к водным объектам, питьевой воде …»","correct":false},{"text":"Технические регламенты на отдельные группы пищевых продуктов","correct":false}],"origin":"pdf"},{"id":"src-80-1","number":80,"numberVariant":1,"text":"Молочным продуктом - источником скрытого жира или сахара не является:","options":[{"text":"кефир","correct":true},{"text":"сгущенное молоко","correct":false},{"text":"плавленый сыр","correct":false},{"text":"твердый сыр","correct":false},{"text":"твороженная масса с сухофруктами","correct":false}],"origin":"pdf"},{"id":"src-81-1","number":81,"numberVariant":1,"text":"Для увеличения биологической ценности зерновых продуктов оптимальными считаются сочетания круп, теста и макаронных изделий со следующими продуктами:","options":[{"text":"мясом, яйцами, творогом","correct":true},{"text":"сливочным маслом, сахаром, джемом","correct":false},{"text":"овощами, фруктами, ягодами","correct":false}],"origin":"pdf"},{"id":"src-82-1","number":82,"numberVariant":1,"text":"Микотоксин, не обладающий канцерогенной активностью:","options":[{"text":"дезоксиниваленол","correct":true},{"text":"афлатоксин","correct":false},{"text":"патулин","correct":false},{"text":"фуманизин","correct":false}],"origin":"pdf"},{"id":"src-83-1","number":83,"numberVariant":1,"text":"Повышенные МДУ нитратов регламентируются для:","options":[{"text":"ранних сортов овощей и другой продукции, выращиваемой в условиях защищенного грунта","correct":true},{"text":"поздних сортов овощей и другой продукции, выращиваемой в условиях открытого грунта","correct":false}],"origin":"pdf"},{"id":"src-84-1","number":84,"numberVariant":1,"text":"При выращивании овощей и фруктов широко используются минеральные удобрения и пестициды, что определяет необходимость регламентирования в плодоовощной продукции:","options":[{"text":"нитратов, изомеров ГХЦГ","correct":true},{"text":"микотоксинов, нитрозаминов","correct":false},{"text":"радионуклидов, полихлорированных бифенилов","correct":false}],"origin":"pdf"},{"id":"src-85-1","number":85,"numberVariant":1,"text":"Консервирование за счет повышения осмотического давления достигается","options":[{"text":"введением в продукт поваренной соли в количестве более 10% или сахара в количестве более 60%, что ограничивает возможность его широкого использования в повседневном питании","correct":true},{"text":"введением в продукт поваренной соли в количестве более 20-25% или сахара в количестве 40-50%, что расширяет возможность его использования в повседневном питании","correct":false}],"origin":"pdf"},{"id":"src-86-1","number":86,"numberVariant":1,"text":"В качестве консервантов могут быть использованы следующие пищевые добавки:","options":[{"text":"бензойная кислота","correct":true},{"text":"сорбиновая кислота","correct":true},{"text":"сернистая кислота","correct":true},{"text":"индигокармин","correct":false},{"text":"тартразин","correct":false}],"origin":"pdf"},{"id":"src-87-1","number":87,"numberVariant":1,"text":"Продукты животного происхождения обеспечивают организм","options":[{"text":"незаменимыми аминокислотами, доступными кальцием и железом, ретинолом, цинком","correct":true},{"text":"углеводами, аскорбиновой кислотой, ПНЖК, пищевыми волокнами","correct":false},{"text":"холестерином, ПНЖК, крахмалом, фосфором, магнием, йодом","correct":false}],"origin":"pdf"},{"id":"src-88-1","number":88,"numberVariant":1,"text":"Функциональные пищевые продукты (определение):","options":[{"text":"продукты, способные повышать уровень здоровья и снижать риск заболеваний в результате заданного влияния на физиологические функции организма без учета обычной нутриентной поддержки","correct":true},{"text":"продукты, способные повышать уровень здоровья и снижать риск заболеваний за счет их обогащения дефицитными нутриентами","correct":false},{"text":"продукты, способные повышать уровень здоровья и снижать риск заболеваний в результате удаления компонентов с отрицательным алиментарным потенциалом","correct":false}],"origin":"pdf"},{"id":"src-89-1","number":89,"numberVariant":1,"text":"Минеральный состав молока характеризуется:","options":[{"text":"высоким содержанием и оптимальной сбалансированностью кальция, и фосфора, низким содержанием железа и натрия","correct":true},{"text":"высоким содержанием и оптимальной сбалансированностью кальция, и фосфора, высоким содержанием железа и натрия","correct":false},{"text":"низким содержанием калия, кальция, железа, натрия","correct":false},{"text":"высоким содержанием калия, кальция, железа, натрия","correct":false}],"origin":"pdf"},{"id":"src-90-1","number":90,"numberVariant":1,"text":"Традиционная технология производства муки высшего и 1-го сортов и круп обусловливает:","options":[{"text":"потери пищевых волокон, витаминов и минеральных веществ","correct":true},{"text":"обогащение пищевыми волокнами, витаминами и минеральными веществами","correct":false}],"origin":"pdf"},{"id":"src-91-1","number":91,"numberVariant":1,"text":"Продолжительность проверки деятельности юридического лица или индивидуального предпринимателя не должна превышать _____________ рабочих дней","options":[{"text":"10","correct":true},{"text":"20","correct":false},{"text":"30","correct":false}],"origin":"pdf"},{"id":"src-92-1","number":92,"numberVariant":1,"text":"При длительном кулинарном перегреве растительных масел возникает опасность:","options":[{"text":"увеличения кислотного и перекисного чисел, разрушения токоферолов и фосфолипидов","correct":true},{"text":"уменьшения кислотного и перекисного чисел, изомеризации жирных кислот","correct":false}],"origin":"pdf"},{"id":"src-93-1","number":93,"numberVariant":1,"text":"Пищевые добавки (определение):","options":[{"text":"вещества, специально вводимые в пищевые продукты в процессе изготовления в целях придания им заданных свойств или сохранения их качества","correct":true},{"text":"вещества, специально вводимые в пищевые продукты для повышения их пищевой ценности и придания функциональных свойств","correct":false}],"origin":"pdf"},{"id":"src-94-1","number":94,"numberVariant":1,"text":"Допустимые концентрации миграции устанавливаются для:","options":[{"text":"мономеров и вспомогательных технологических компонентов полимерного материала, контактирующего с пищевыми продуктами","correct":true},{"text":"полимеров, контактирующих с пищевыми продуктами","correct":false},{"text":"токсичных элементов и радионуклидов, содержащихся в почвах сельскохозяйственных угодий","correct":false},{"text":"химических соединений, присутствующих в воде, используемой для мытья и приготовления пищевых продуктов","correct":false}],"origin":"pdf"},{"id":"src-95-1","number":95,"numberVariant":1,"text":"Натуральные пищевые добавки, применяющиеся в качестве улучшителей консистенции","options":[{"text":"агароид пищевой","correct":true},{"text":"альгинат натрия","correct":true},{"text":"агар","correct":true},{"text":"фосфат натрия","correct":false}],"origin":"pdf"},{"id":"src-96-1","number":96,"numberVariant":1,"text":"Рекомендации по использованию мясопродуктов в питании:","options":[{"text":"все перечисленное верно","correct":true},{"text":"ежедневно включать в рацион нежирные сорта мяса, птицы","correct":false},{"text":"использовать колбасные изделия в рационе взрослого человека не чаще 2-3 раз в неделю","correct":false},{"text":"не использовать колбасные изделия в питании детей дошкольного возраста","correct":false},{"text":"еженедельно включать в рацион субпродукты I категории","correct":false}],"origin":"pdf"},{"id":"src-97-1","number":97,"numberVariant":1,"text":"К группе санитарно-показательных микроорганизмов относятся","options":[{"text":"КМАФАнМ","correct":true},{"text":"БГКП","correct":true},{"text":"сульфитредуцирующие клостридии","correct":false},{"text":"дрожжи","correct":false},{"text":"плесневые грибы","correct":false}],"origin":"pdf"},{"id":"src-98-1","number":98,"numberVariant":1,"text":"Заключение врача-эксперта по партии свежей рыбы, массивно пораженной плероцеркоидом широкого лентеца","options":[{"text":"не пригодна для целей питания, направить на техническую переработку","correct":true},{"text":"годна для целей питания при условии промывания в соленой воде","correct":false},{"text":"годна для целей питания при условии тщательной термической обработки","correct":false},{"text":"не пригодна для целей питания, списать на корм скоту по согласованию с ветеринарно-санитарным надзором","correct":false}],"origin":"pdf"},{"id":"src-99-1","number":99,"numberVariant":1,"text":"При принятии решения о способах деконтаминационной переработки пищевой продукции, загрязненной хлорорганическими пестицидами (ХОП), принимается во внимание:","options":[{"text":"приоритетное концентрирование ХОП в жирах и в нерастворимых компонентах продовольствия, устойчивость ХОП в течение времени и по отношению к высокотемпературной обработке","correct":true},{"text":"приоритетное концентрирование ХОП в растворимых компонентах продовольствия, низкая стойкость ХОП в течение времени и по отношению к высокотемпературной обработке","correct":false}],"origin":"pdf"},{"id":"src-100-1","number":100,"numberVariant":1,"text":"Канцерогенный акриламид образуется и накапливается в процессе:","options":[{"text":"жаренья и выпекания при температуре выше 120°С","correct":true},{"text":"варки и кипячения при температуре 100°С","correct":false},{"text":"холодного дымового копчения","correct":false}],"origin":"pdf"},{"id":"src-101-1","number":101,"numberVariant":1,"text":"Температурный интервал, при котором количество мезофильных условно-патогенных микроорганизмов в пище удваивается каждые 15-20 минут:","options":[{"text":"15-45°С","correct":true},{"text":"0-6°С","correct":false},{"text":"8-14°С","correct":false},{"text":"50-60°С","correct":false}],"origin":"pdf"},{"id":"src-102-1","number":102,"numberVariant":1,"text":"Белки бобовых (гороха, фасоли, сои) по сравнению с животными белками:","options":[{"text":"имеют более низкую биологическую ценность из-за дефицита серосодержащих аминокислот","correct":true},{"text":"имеют аналогичную биологическую ценность","correct":false},{"text":"имеют более высокую биологическую ценность за счет лучшей усвояемости","correct":false}],"origin":"pdf"},{"id":"src-103-1","number":103,"numberVariant":1,"text":"Орехи, семена и продукты, их содержащие (мюсли, сухие завтраки), целесообразно комбинировать в рационе с молочными продуктами с целью:","options":[{"text":"повышения биологической ценности","correct":true},{"text":"повышения усвояемости","correct":false},{"text":"снижения энергетической ценности","correct":false},{"text":"снижения приедаемости","correct":false}],"origin":"pdf"},{"id":"src-104-1","number":104,"numberVariant":1,"text":"Гигиеническая классификация пестицидов учитывает их:","options":[{"text":"токсичность","correct":true},{"text":"степень кумуляции","correct":true},{"text":"стойкость в объектах окружающей среды","correct":true},{"text":"химическую структуру","correct":false},{"text":"механизм действия","correct":false}],"origin":"pdf"},{"id":"src-105-1","number":105,"numberVariant":1,"text":"Мясо признается непригодным для питания и подлежит технической утилизации или уничтожению при обнаружении:","options":[{"text":"одной личинки трихинеллы, более трех финн свиного цепня на площади 40 см2","correct":true},{"text":"любого количества финн свиного цепня, эхинококков, альвеококков","correct":false}],"origin":"pdf"},{"id":"src-106-1","number":106,"numberVariant":1,"text":"Температуру блюд, реализуемых потребителям в предприятиях общественного питания, необходимо указывать в","options":[{"text":"технологической документации","correct":true},{"text":"меню","correct":false},{"text":"гигиеническом журнале","correct":false}],"origin":"pdf"},{"id":"src-107-1","number":107,"numberVariant":1,"text":"Овощи и фрукты, являясь обязательными компонентами ежедневного рациона, обеспечивают:","options":[{"text":"поступление в организм незаменимых нутриентов, нормальную моторику и секрецию желудочно-кишечного тракта, пребиотический эффект","correct":true},{"text":"поступление в организм балластных веществ, моно- и дисахаридов, быстрое чувство насыщения, повышенный диурез, колонизацию в кишечнике лактобактерий","correct":false}],"origin":"pdf"},{"id":"src-108-1","number":108,"numberVariant":1,"text":"Молоко, полученное от больных маститом животных, может быть использовано:","options":[{"text":"после кипячения для кормления молодняка","correct":true},{"text":"после кипячения для пищевых целей, без ограничений","correct":false},{"text":"подлежит уничтожению","correct":false}],"origin":"pdf"},{"id":"src-109-1","number":109,"numberVariant":1,"text":"Афлатоксин продуцируется грибами рода:","options":[{"text":"Aspergillus","correct":true},{"text":"Fusarium","correct":false},{"text":"Claviceps","correct":false}],"origin":"pdf"},{"id":"src-110-1","number":110,"numberVariant":1,"text":"В число пищевых добавок не входят:","options":[{"text":"дефолианты","correct":true},{"text":"подсластители","correct":false},{"text":"эмульгаторы","correct":false}],"origin":"pdf"},{"id":"src-111-1","number":111,"numberVariant":1,"text":"При использовании пищевых добавок в предприятиях общественного питания необходимо","options":[{"text":"организовать контроль их дозирования в соответствии с рецептурой","correct":true},{"text":"соблюдать установленные нормы использования","correct":true},{"text":"соблюдать требования к их хранению","correct":true},{"text":"информировать потребителей о наличии пищевых добавок","correct":true}],"origin":"pdf"},{"id":"src-112-1","number":112,"numberVariant":1,"text":"ЛПП не допускается отпускать на дом лицам, имеющим право на его получение","options":[{"text":"за прошлое время и в качестве компенсации за неполученное ЛПП","correct":true},{"text":"период временной утраты работоспособности вследствие профзаболевания","correct":false},{"text":"матерям, кормящим грудью, при переводе на другую работу","correct":false},{"text":"инвалидам вследствие профзаболевания","correct":false},{"text":"женщинам, имеющим детей до года","correct":false}],"origin":"pdf"},{"id":"src-113-1","number":113,"numberVariant":1,"text":"Оценка химического состава рационов ЛПП производится на основании:","options":[{"text":"анализа меню-ракладок","correct":true},{"text":"заболеваемости работающих","correct":false},{"text":"бракеражного журнала","correct":false}],"origin":"pdf"},{"id":"src-114-1","number":114,"numberVariant":1,"text":"Выдачу рационов ЛПП рекомендуется производить в виде:","options":[{"text":"горячих завтраков перед началом работы","correct":true},{"text":"обедов в обеденный перерыв","correct":false},{"text":"горячих обедов по окончании работы","correct":false},{"text":"сухого пайка","correct":false}],"origin":"pdf"},{"id":"src-115-1","number":115,"numberVariant":1,"text":"Оценка эффективности назначения ЛПП производится на основании анализа:","options":[{"text":"заболеваемости работников предприятия","correct":true},{"text":"меню-раскладок","correct":false},{"text":"возрастного состава работников предприятия","correct":false}],"origin":"pdf"},{"id":"src-116-1","number":116,"numberVariant":1,"text":"Диетотерапия по целям и уровням воздействия на организм подразделяется на:","options":[{"text":"симптоматическую, органоспецифическую, метаболическую","correct":true},{"text":"стационарную, амбулаторную, курортную","correct":false},{"text":"щадящую, нагрузочную, комбинированную","correct":false}],"origin":"pdf"},{"id":"src-117-1","number":117,"numberVariant":1,"text":"Одна из значимых диетологических проблем при существенном сокращении жиров в рационе:","options":[{"text":"снижение общего поступления и усвояемости витаминов А, Е, К, D","correct":true},{"text":"снижение общего поступления и усвояемости витаминов С, В1, В6, РР","correct":false},{"text":"снижение общего поступления и усвояемости кальция, железа, селена, йода","correct":false}],"origin":"pdf"},{"id":"src-118-1","number":118,"numberVariant":1,"text":"Суточные пробы готовой пищи на пищеблоках ЛПУ и в организациях питания детей","options":[{"text":"оставляют ежедневно в количестве одной порции каждого блюда и хранят в отдельном холодильнике в течение двух суток","correct":true},{"text":"оставляют ежедневно в количестве двух порций каждого второго блюда и хранят в отдельном холодильнике в течение суток","correct":false},{"text":"оставляют ежедневно в количестве одной порции каждого первого блюда и хранят в отдельном холодильнике в течение трех суток","correct":false}],"origin":"pdf"},{"id":"src-119-1","number":119,"numberVariant":1,"text":"Витаминные препараты в качестве отдельного вида ЛПП выдаются при работе в условиях:","options":[{"text":"высоких температур, действия никотинсодержащей пыли","correct":true},{"text":"низких температур, действия шума, вибрации","correct":false}],"origin":"pdf"},{"id":"src-120-1","number":120,"numberVariant":1,"text":"Номенклатура диет в ЛПУ (согласно приказу МЗ РФ №330 от 05.08.2003) состоит из шести стандартных диет и включает следующие варианты:","options":[{"text":"основная, с механическим и химическим щажением, с повышенным количеством белка, с пониженным количеством белка, с пониженной калорийностью, с повышенным количеством белка (при туберкулезе)","correct":true},{"text":"основная, с механическим, химическим и термическим щажением, с повышенным количеством жира и белка, с пониженным количеством жира и белка, с повышенной калорийностью, с пониженной калорийносью","correct":false},{"text":"основная, с механическим и термическим щажением, с повышенным количеством жира, с пониженным количеством жира, с повышенной калорийностью, с повышенным количеством белка","correct":false}],"origin":"pdf"},{"id":"src-121-1","number":121,"numberVariant":1,"text":"Рационы ЛПП:","options":[{"text":"разработаны варианты № 1, 2, 2а, 3, 4, 4а, 4б, 5; выдаются, как правило, перед началом смены; должны содержать не менее 50% суточной потребности в нутриентах и энергии","correct":true},{"text":"разработаны варианты № I, 2, 3, 4, 5, 6; выдаются в обеденный перерыв; должны содержать не менее 30% суточной потребности в нутриентах и энергии","correct":false}],"origin":"pdf"},{"id":"src-122-1","number":122,"numberVariant":1,"text":"Санитарный врач начинает расследование пищевого отравления","options":[{"text":"немедленно после получения экстренного извещения","correct":true},{"text":"после получения результатов бактериологического и химического анализа пищи","correct":false},{"text":"на следующий день после получения экстренного извещения","correct":false},{"text":"в течение 3-х суток после получения экстренного извещения","correct":false}],"origin":"pdf"},{"id":"src-123-1","number":123,"numberVariant":1,"text":"При расследовании пищевого отравления санитарный врач обязан установить связь с","options":[{"text":"медицинским работником, оказывающим помощь заболевшим","correct":true},{"text":"дирекцией предприятия, где работают пострадавшие","correct":false},{"text":"главным врачом поликлиники","correct":false},{"text":"родственниками пострадавших","correct":false}],"origin":"pdf"},{"id":"src-124-1","number":124,"numberVariant":1,"text":"Возбудитель ботулизма является","options":[{"text":"анаэробом","correct":true},{"text":"аэробом","correct":false}],"origin":"pdf"},{"id":"src-125-1","number":125,"numberVariant":1,"text":"В результате употребления пастеризованного молока, полученного от маститных животных, может возникнуть","options":[{"text":"стафилококковый токсикоз","correct":true},{"text":"ботулизм","correct":false},{"text":"иерсиниоз","correct":false},{"text":"эшерихиоз","correct":false}],"origin":"pdf"},{"id":"src-126-1","number":126,"numberVariant":1,"text":"Ведущим при установление патогенности стафилококков является","options":[{"text":"реакция плазмокоагуляции","correct":true},{"text":"пигментообразование","correct":false},{"text":"реакция чащечного гемолиза","correct":false},{"text":"реакция агглютинации","correct":false}],"origin":"pdf"},{"id":"src-127-1","number":127,"numberVariant":1,"text":"В лабораторных исследованиях при установлении источника инфицирования пищевого продукта стафилококками используется","options":[{"text":"метод фаготипирования","correct":true},{"text":"реакция агглютинации","correct":false},{"text":"реакция плазмокоагуляции","correct":false}],"origin":"pdf"},{"id":"src-128-1","number":128,"numberVariant":1,"text":"В пищевом продукте, содержащем возбудителей ботулизма, при кипячении в течение 15 мин. могут остаться","options":[{"text":"споры","correct":true},{"text":"микробы","correct":false},{"text":"токсины","correct":false}],"origin":"pdf"},{"id":"src-129-1","number":129,"numberVariant":1,"text":"В патогенезе пищевых токсикоинфекций основную роль играют","options":[{"text":"живые микробы, размножившиеся в пище","correct":true},{"text":"токсины, образовавшиеся в пище в результате размножения микробов","correct":false}],"origin":"pdf"},{"id":"src-130-1","number":130,"numberVariant":1,"text":"Характерные признаки вспышек пищевых отравлений в отличие от кишечных инфекций","options":[{"text":"массовость, внезапное начало, связь заболевания с приемом пищи, короткий инкубационный период","correct":true},{"text":"массовость, контагиозность, короткий инкубационный период","correct":false},{"text":"инкубационный период до 7 дней, контагиозность","correct":false}],"origin":"pdf"},{"id":"src-131-1","number":131,"numberVariant":1,"text":"Предварительный диагноз пищевого отравления ставится на основании","options":[{"text":"клинических симптомов, длительности инкубационного периода, эпидемиологического анамнеза","correct":true},{"text":"характера подозреваемого продукта, результатов лабораторных исследований","correct":false}],"origin":"pdf"},{"id":"src-132-1","number":132,"numberVariant":1,"text":"Заболевания (патологические состояния), требующие ограничения в рационе белков:","options":[{"text":"хроническая почечная недостаточность, ревматизм","correct":true},{"text":"ожирение, сахарный диабет, кожные заболевания","correct":false},{"text":"нефротический синдром, реактивный панкреатит, ожоговая болезнь","correct":false}],"origin":"pdf"},{"id":"src-133-1","number":133,"numberVariant":1,"text":"К пищевым отравлениям не относятся:","options":[{"text":"отравления алкоголем (этанолом), пищевые аллергии","correct":true},{"text":"отравления фазином, соланином","correct":false},{"text":"отравления пестицидами, нитратами","correct":false}],"origin":"pdf"},{"id":"src-134-1","number":134,"numberVariant":1,"text":"Блюда, в которых стафилококковый энтеротоксин способен накапливаться при комнатной температуре в течение 3-4 часов до пороговой дозы:","options":[{"text":"котлета с картофельным пюре, макароны по-флотски, молочная каша","correct":true},{"text":"тушеное мясо с маринованными овощами, щи из кислой капусты, рыба, запеченная в лимонном соусе","correct":false}],"origin":"pdf"},{"id":"src-135-1","number":135,"numberVariant":1,"text":"Основные причины микронутриентного дефицита:","options":[{"text":"низкое содержание в рационе основных источников микронутриентов","correct":true},{"text":"повышенный расход микронутриентов в защитно-адаптационных процессах в организме","correct":true},{"text":"нарушение механизмов метаболизации микронутриентов","correct":true}],"origin":"pdf"},{"id":"src-136-1","number":136,"numberVariant":1,"text":"К пищевым отравлениям не относится:","options":[{"text":"сальмонеллез","correct":true},{"text":"микотоксикоз","correct":false},{"text":"стафилококковая интоксикация","correct":false}],"origin":"pdf"},{"id":"src-137-1","number":137,"numberVariant":1,"text":"Основными продуктами, обусловливающими поступление Vibrio parahaemolyticus в организм, являются:","options":[{"text":"рыба и морепродукты","correct":true},{"text":"овощи и фрукты","correct":false},{"text":"мясо и овощи","correct":false}],"origin":"pdf"},{"id":"src-138-1","number":138,"numberVariant":1,"text":"Основным показателем соблюдения санитарного регламента производства молока является","options":[{"text":"кислотность","correct":true},{"text":"плотность","correct":false},{"text":"содержание жира","correct":false}],"origin":"pdf"},{"id":"src-139-1","number":139,"numberVariant":1,"text":"Основной задачей санитарно-эпидемиологической экспертизы пищевых продуктов является определение","options":[{"text":"соответствия/несоответствия требованиям технических регламентов","correct":true},{"text":"соответствия продукта государственным стандартам","correct":false},{"text":"условий реализации продукта","correct":false},{"text":"пищевой ценности","correct":false}],"origin":"pdf"},{"id":"src-140-1","number":140,"numberVariant":1,"text":"Готовые (первые и вторые) блюда в предприятиях общественного питания должны быть реализованы в течение","options":[{"text":"2-3 часов","correct":true},{"text":"1-2 часов","correct":false},{"text":"4-6 часов","correct":false}],"origin":"pdf"},{"id":"src-141-1","number":141,"numberVariant":1,"text":"Наибольшую потенциальную опасность в общественном питании представляют нарушения","options":[{"text":"заключительного этапа приготовления и реализации пищи","correct":true},{"text":"температурных условий хранения сырья","correct":false},{"text":"сроков реализации полуфабрикатов","correct":false}],"origin":"pdf"},{"id":"src-142-1","number":142,"numberVariant":1,"text":"Основным принципом правильного размещения помещений производственных корпусов пищевых предприятий является","options":[{"text":"соблюдение поточности технологического процесса","correct":true},{"text":"рациональное размещение холодильного оборудования","correct":false},{"text":"наличие дезинфекционных «ковриков» перед входом в производственные цехи","correct":false},{"text":"оборудование помещений для персонала по типу санпропускника","correct":false}],"origin":"pdf"},{"id":"src-143-1","number":143,"numberVariant":1,"text":"На земледельческих полях орошения (ЗПО) запрещено культивирование","options":[{"text":"овощных культур","correct":true},{"text":"технических культур","correct":false},{"text":"кормовых культур","correct":false},{"text":"зерновых культур","correct":false}],"origin":"pdf"},{"id":"src-144-1","number":144,"numberVariant":1,"text":"При исследовании органолептических свойств рыбы проба «на шпильку» или «на нож» производится с целью определения","options":[{"text":"запаха","correct":true},{"text":"цвета","correct":false},{"text":"консистенции","correct":false},{"text":"вкуса","correct":false}],"origin":"pdf"},{"id":"src-145-1","number":145,"numberVariant":1,"text":"Влажность муки не должна превышать","options":[{"text":"15%","correct":true},{"text":"10%","correct":false},{"text":"5%","correct":false},{"text":"20%","correct":false}],"origin":"pdf"},{"id":"src-146-1","number":146,"numberVariant":1,"text":"Определение, характеризующее процесс созревания мяса","options":[{"text":"начальная стадия автолиза, в которой наибольшую активность проявляют ферменты гликолиза, приводящие к существенным изменениям в углеводной системе","correct":true},{"text":"процесс распада тканей мяса, происходящий с участием микроорганизмов и его ферментов","correct":false},{"text":"процесс биохимических превращений в белковых веществах под влиянием протеаз","correct":false},{"text":"процесс биохимических превращений жировых веществ под влиянием липаз","correct":false}],"origin":"pdf"},{"id":"src-147-1","number":147,"numberVariant":1,"text":"Пищевые продукты, кроме специализированных и продуктов животного происхождения непереработанных, подлежат:","options":[{"text":"обязательному декларированию","correct":true},{"text":"обязательной сертификации","correct":false},{"text":"добровольной сертификации","correct":false},{"text":"все перечисленное верно","correct":false}],"origin":"pdf"},{"id":"src-148-1","number":148,"numberVariant":1,"text":"При отсутствии необходимой сопроводительной документации партия пищевой продукции:","options":[{"text":"признается потенциально опасной и изымается из оборота","correct":true},{"text":"требует немедленной реализации при отсутствии внешних признаков порчи","correct":false},{"text":"требует немедленного уничтожения или технической утилизации","correct":false}],"origin":"pdf"},{"id":"src-149-1","number":149,"numberVariant":1,"text":"Критические контрольные точки (определение):","options":[{"text":"стадии производства (оборота), на которых возможно осуществление контроля и предотвращение (удаление) опасного фактора","correct":true},{"text":"временные интервалы, определяющие кратность контроля этапов производства","correct":false}],"origin":"pdf"},{"id":"src-150-1","number":150,"numberVariant":1,"text":"При наличии в организации мелкорозничной торговли одного рабочего места допускается:","options":[{"text":"реализация продукции только в промышленной упаковке","correct":true},{"text":"реализация только продукции, не являющейся скоропортящейся","correct":false},{"text":"реализация только хлебобулочных изделий","correct":false}],"origin":"pdf"},{"id":"src-151-1","number":151,"numberVariant":1,"text":"Маркировка продуктов убоя и мясной продукции должна соответствовать требованиям","options":[{"text":"ТР ТС 022/2011 \"Пищевая продукция в части ее маркировки\"","correct":true},{"text":"ТР ТС 034/2013 «О безопасности мяса и мясной продукции»","correct":true},{"text":"ТР ТС 021/2011 «О безопасности пищевой продукции»","correct":false}],"origin":"pdf"},{"id":"src-152-1","number":152,"numberVariant":1,"text":"Температура внутри рыбных кулинарных изделий непосредственно после тепловой обработки должна быть не ниже","options":[{"text":"80о С","correct":true},{"text":"60о С","correct":false},{"text":"100о С","correct":false}],"origin":"pdf"},{"id":"src-153-1","number":153,"numberVariant":1,"text":"На предприятиях пищевой промышленности витаминизируют","options":[{"text":"пшеничную муку, молоко, маргарин","correct":true},{"text":"колбасные изделия, шоколад","correct":false},{"text":"сыры, кондитерские изделия","correct":false}],"origin":"pdf"},{"id":"src-154-1","number":154,"numberVariant":1,"text":"Устойчивость в процессе хранения колбасных изделий обеспечивают","options":[{"text":"низкое содержание влаги, интенсивная тепловая обработка, высокое содержание поваренной соли","correct":true},{"text":"высокое содержание влаги, слабая тепловая обработка","correct":false},{"text":"интенсивная тепловая обработка, высокое содержание влаги, высокое содержание поваренной соли","correct":false}],"origin":"pdf"},{"id":"src-155-1","number":155,"numberVariant":1,"text":"Гигиенически значимые особенности производства пресервов","options":[{"text":"отсутствие тепловой обработки, использование консервантов","correct":true},{"text":"использование пряностей, герметичное укупоривание","correct":false},{"text":"использование консервантов, пряностей","correct":false}],"origin":"pdf"},{"id":"src-156-1","number":156,"numberVariant":1,"text":"Санитарно-защитные зоны для пищевых объектов проектируются, исходя из:","options":[{"text":"класса опасности объекта","correct":true},{"text":"мощности объекта","correct":false},{"text":"профиля объекта","correct":false}],"origin":"pdf"},{"id":"src-157-1","number":157,"numberVariant":1,"text":"В мясном цехе предприятия общественного питания особое внимание при организации производственного контроля следует уделять процессу:","options":[{"text":"приготовления фарша и котлетной массы","correct":true},{"text":"дефростации","correct":false},{"text":"приготовления мелкокусковых полуфабрикатов","correct":false},{"text":"приготовления полуфабрикатов из субпродуктов","correct":false}],"origin":"pdf"},{"id":"src-158-1","number":158,"numberVariant":1,"text":"Работники пищевых предприятий проходят бактериологическое исследование на носительство кишечных инфекций:","options":[{"text":"при поступлении на работу и в дальнейшем по эпидпоказаниям","correct":true},{"text":"при поступлении на работу и в дальнейшем 1 раз в 6 месяцев","correct":false},{"text":"при поступлении на работу и в дальнейшем 1 раз в год","correct":false}],"origin":"pdf"},{"id":"src-159-1","number":159,"numberVariant":1,"text":"Госсанэпиднадзор за текущим состоянием пищевых объектов является:","options":[{"text":"формой оценки соответствия требованиям санитарного законодательства","correct":true},{"text":"формой организации производственного контроля","correct":false},{"text":"формой управления процессом производства","correct":false}],"origin":"pdf"},{"id":"src-160-1","number":160,"numberVariant":1,"text":"Гигиенические требования к качеству пищевых продуктов складываются из следующих основных критериев:","options":[{"text":"пищевой ценности, безопасности, потребительских свойств","correct":true},{"text":"наличия сопроводительных документов, безопасности","correct":false},{"text":"устойчивости при хранении, физико-химических свойств","correct":false}],"origin":"pdf"},{"id":"src-161-1","number":161,"numberVariant":1,"text":"Основанием для проведения внеплановой проверки является","options":[{"text":"истечение срока исполнения ЮЛ, ИП ранее выданного предписания об устранении выявленного нарушения обязательных требований","correct":true},{"text":"причинение вреда жизни, здоровью граждан","correct":true},{"text":"нарушение прав потребителей","correct":true},{"text":"приказ (распоряжение) руководителя органа государственного контроля (надзора), изданный в соответствии с поручениями Президента Российской Федерации, Правительства Российской Федерации и на основании требования прокурора","correct":true},{"text":"ежегодный план","correct":false}],"origin":"pdf"},{"id":"src-161-2","number":161,"numberVariant":2,"text":"Работники предприятий общественного питания и торговли проходят осмотр дерматовенерологом:","options":[{"text":"при поступлении на работу и в дальнейшем 1 раз в год","correct":true},{"text":"при поступлении на работу и в дальнейшем по эпидпоказаниям","correct":false},{"text":"при поступлении на работу и в дальнейшем 1 раз в 6 месяцев","correct":false}],"origin":"pdf"},{"id":"src-162-1","number":162,"numberVariant":1,"text":"Объектами производственного контроля на пищевых предприятиях являются:","options":[{"text":"критические контрольные точки","correct":true},{"text":"опасные с позиций травматизма этапы производства","correct":false},{"text":"начальный и конечный этапы производства","correct":false}],"origin":"pdf"},{"id":"src-163-1","number":163,"numberVariant":1,"text":"Предельная кислотность молока пастеризованного, пригодного к реализации, составляет:","options":[{"text":"21 градус Тернера","correct":true},{"text":"23 градусов Тернера","correct":false},{"text":"27 градусов Тернера","correct":false},{"text":"25 градусов Тернера","correct":false}],"origin":"pdf"},{"id":"src-164-1","number":164,"numberVariant":1,"text":"По результатам лабораторных исследований образцов пищевой продукции:","options":[{"text":"составляется протокол исследований проб пищевых продуктов, содержащий результаты лабораторных исследований и экспертное заключение о соответствии образца санитарно-эпидемиологическим нормативам","correct":true},{"text":"составляется протокол исследований проб пищевых продуктов, содержащий результаты лабораторных исследований и заключение по партии продукции","correct":false},{"text":"составляется акт по результатам мероприятий по контролю с заключением по партии продукции","correct":false}],"origin":"pdf"},{"id":"src-165-1","number":165,"numberVariant":1,"text":"Для установления эффективности санитарной обработки смывы берут с","options":[{"text":"чистых объектов до работы","correct":true},{"text":"грязных объектов в момент работы","correct":false},{"text":"грязных объектов после работы","correct":false}],"origin":"pdf"},{"id":"src-166-1","number":166,"numberVariant":1,"text":"Укажите правильный вариант изъятия из оборота партии продукции несоответствующей обязательным требованиям:","options":[{"text":"продукция уничтожается на основании предписания, выданного специалистом Управления Роспотребнадзора, силами и средствами предприятия, в присутствии комиссии предприятия","correct":true},{"text":"продукция изымается из оборота санитарным врачом, проводившим экспертизу","correct":false},{"text":"продукция уничтожается владельцем товара по заключению санитарного врача, после получения результатов лабораторных испытаний","correct":false}],"origin":"pdf"},{"id":"src-167-1","number":167,"numberVariant":1,"text":"При соблюдении каких условий строящийся объект может быть принят в эксплуатацию:","options":[{"text":"экологическая безопасность","correct":true},{"text":"соответствующие гигиеническим требованиям условия труда персонала","correct":true},{"text":"возможность выпуска продукции, соответствующей требованиям нормативных и технических документов","correct":true}],"origin":"pdf"},{"id":"src-168-1","number":168,"numberVariant":1,"text":"Срок годности партии колбасы вареной, реализуемой в предприятии торговли, истек. Органолептические свойства продукции сохранены, условия хранения соответствуют указанным на маркировке. Ваше решение относительно «судьбы» данной партии:","options":[{"text":"продукт считается непригодным для использования по назначению, продление сроков годности недопустимо","correct":true},{"text":"срок годности данной партии продукта может быть продлен региональным Управлением Роспотребнадзора на срок, не превышающий половины установленного срока годности","correct":false},{"text":"срок годности данной партии может быть продлен комиссионно до окончания ее реализации при ежеденевном контроле качества продукции","correct":false},{"text":"партия продукта может быть реализована по более низким ценам","correct":false}],"origin":"pdf"},{"id":"src-169-1","number":169,"numberVariant":1,"text":"К специализированной пищевой продукции относят:","options":[{"text":"продукты детского питания","correct":true},{"text":"минеральная вода","correct":true},{"text":"продукты для питания спортсменов","correct":true},{"text":"пищевые добавки и ароматизаторы","correct":false}],"origin":"pdf"},{"id":"src-170-1","number":170,"numberVariant":1,"text":"Целями принятия технических регламентов являются:","options":[{"text":"защита жизни и здоровья человека","correct":true},{"text":"защита окружающей среды, растений, животных","correct":true},{"text":"предупреждение действий, вводящих в заблуждение приобретателей (потребителей)","correct":true},{"text":"защита прав потребителей, продавцов, поставщиков продукции при осуществлении государственного санитарно-эпидемиологического надзора (контроля)","correct":false}],"origin":"pdf"},{"id":"src-171-1","number":171,"numberVariant":1,"text":"Пищевые продукты, в которых следует определять ртутьорганические пестициды","options":[{"text":"зерно и продукты его переработки","correct":true},{"text":"яйца и яйцепродукты","correct":false},{"text":"фрукты и ягоды","correct":false},{"text":"мед","correct":false}],"origin":"pdf"},{"id":"src-172-1","number":172,"numberVariant":1,"text":"Пищевые продукты, в которых следует определять нитраты","options":[{"text":"овощи, фрукты","correct":true},{"text":"рыба и рыбопродукты","correct":false},{"text":"зерно и продукты его переработки","correct":false}],"origin":"pdf"},{"id":"src-173-1","number":173,"numberVariant":1,"text":"Продукты, в которых необходимо определять содержание охратоксина А:","options":[{"text":"продовольственное зерно, мукомольно-крупяные изделия","correct":true},{"text":"овощи и фрукты","correct":false},{"text":"мясо, молоко","correct":false},{"text":"нерыбные объекты промысла","correct":false}],"origin":"pdf"},{"id":"src-174-1","number":174,"numberVariant":1,"text":"Продукты, в которых необходимо определять содержание фикотоксинов","options":[{"text":"нерыбные объекты промысла (моллюски, внутренние органы крабов)","correct":true},{"text":"продовольственное зерно, мукомольно-крупяные изделия","correct":false},{"text":"овощи и фрукты","correct":false},{"text":"мясо, молоко, яйца","correct":false}],"origin":"pdf"},{"id":"src-175-1","number":175,"numberVariant":1,"text":"Продукты, в которых следует определять афлатоксин В1","options":[{"text":"орехи, семена масличных","correct":true},{"text":"молоко, мясо, яйца","correct":false},{"text":"фруктовые и овощные соки, пюре","correct":false},{"text":"пшеница, рис и продукты их переработки","correct":false}],"origin":"pdf"},{"id":"src-176-1","number":176,"numberVariant":1,"text":"Пищевые продукты, в которых следует определять дезоксиниваленол (вомитоксин)","options":[{"text":"пшеница, ячмень и продукты их перерарботки","correct":true},{"text":"фруктовые и овощные соки","correct":false},{"text":"арахис, кукуруза","correct":false},{"text":"рыба и рыбопродукты","correct":false}],"origin":"pdf"},{"id":"src-177-1","number":177,"numberVariant":1,"text":"Пищевые продукты, в которых следует определять зеараленон","options":[{"text":"кукуруза, пшеница, продукты их переработки","correct":true},{"text":"фруктовые и овощные соки","correct":false},{"text":"арахис, рис","correct":false},{"text":"молоко, мясо, яйца","correct":false}],"origin":"pdf"},{"id":"src-178-1","number":178,"numberVariant":1,"text":"Пищевые продукты, в которых следует определять патулин","options":[{"text":"фруктовые и овощные соки, пюре, повидла","correct":true},{"text":"пшеница, кукуруза и продукты их переработки","correct":false},{"text":"арахис и продукты его переработки, рис","correct":false},{"text":"молоко, мяса, яйца","correct":false}],"origin":"pdf"},{"id":"src-179-1","number":179,"numberVariant":1,"text":"Пищевые продукты, в которых следует определять полихлорированные бифенилы","options":[{"text":"рыба, рыбопродукты","correct":true},{"text":"хлеб, круп","correct":false},{"text":"молоко и молочные продукты","correct":false},{"text":"овощи и фрукты","correct":false}],"origin":"pdf"},{"id":"src-180-1","number":180,"numberVariant":1,"text":"Пищевые продукты, в которых следует определять содержание меламина","options":[{"text":"молоко и молочные продукты","correct":true},{"text":"овощи","correct":false},{"text":"зерно и продукты его переработки","correct":false},{"text":"рыба и рыбопродукты","correct":false}],"origin":"pdf"},{"id":"src-181-1","number":181,"numberVariant":1,"text":"Продукция, соответствующая техническому регламенту Таможенного союза, маркируется единым знаком обращения","options":[{"text":"ЕАС","correct":true},{"text":"ЕАЭС","correct":false},{"text":"РТС","correct":false},{"text":"АСТ","correct":false}],"origin":"pdf"},{"id":"src-182-1","number":182,"numberVariant":1,"text":"Социально-гигиенический мониторинг факторов окружающей среды и здоровья населения позволяет оценить:","options":[{"text":"динамику и взаимосвязь уровня контаминации пищевых продуктов, воды, воздуха и показателей здоровья, заболеваемости и смертности населения","correct":true},{"text":"динамику обеспеченности населения витаминами и минеральными веществами","correct":false},{"text":"взаимосвязь между уровнем содержания в пище железа и распространенностью среди населения железодефицитной анемии","correct":false}],"origin":"pdf"},{"id":"src-183-1","number":183,"numberVariant":1,"text":"Профессиональная гигиеническая подготовка (гигиеническое обучение) согласно приказу Минздрава РФ от 29.06.2000 г. № 229, проводится при приеме на работу и в дальнейшем 1 раз в год для должностных лиц и работников организаций, деятельность которых связана с производством, хранением, транспортировкой и реализацией","options":[{"text":"мясной продукции","correct":true},{"text":"молочной продукции","correct":true},{"text":"кремово-кондитерской продукции","correct":true},{"text":"продукции детского питания","correct":true},{"text":"рыбной продукции","correct":false},{"text":"овощной продукции","correct":false}],"origin":"pdf"}];
+
+const STORAGE_KEY = "gp_quiz_bank_v1";
+const STATS_KEY = "gp_quiz_stats_v1";
+const PAGE_SIZE = 25;
+
+let bank = loadBank();
+let stats = loadStats();
+let quiz = null;
+let bankPage = 1;
+let editingId = null;
+
+function clone(v){ return JSON.parse(JSON.stringify(v)); }
+function uid(){ return "custom-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2,8); }
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c])); }
+function normalizeText(s){ return String(s||"").replace(/\s+/g," ").trim(); }
+function shuffled(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function setsEqual(a,b){ if(a.size!==b.size)return false; for(const x of a) if(!b.has(x)) return false; return true; }
+
+function loadBank(){
+  try{
+    const raw=localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      const parsed=JSON.parse(raw);
+      if(Array.isArray(parsed) && parsed.length) return parsed;
+    }
+  }catch(e){}
+  return clone(DEFAULT_QUESTIONS);
+}
+function saveBank(){
+  try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(bank)); }
+  catch(e){ toast("Не удалось сохранить в браузере — сделай экспорт JSON."); }
+  refreshHome();
+}
+function loadStats(){
+  try{ return JSON.parse(localStorage.getItem(STATS_KEY)) || {attempts:0,best:null}; }
+  catch(e){ return {attempts:0,best:null}; }
+}
+function saveStats(){ try{ localStorage.setItem(STATS_KEY,JSON.stringify(stats)); }catch(e){} }
+
+function showView(id){
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function toast(msg){
+  const el=document.getElementById("toast"); el.textContent=msg; el.classList.add("show");
+  clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove("show"),2600);
+}
+function refreshHome(){
+  document.getElementById("totalQuestions").textContent=bank.length;
+  document.getElementById("attemptsStat").textContent=stats.attempts||0;
+  document.getElementById("bestStat").textContent=stats.best==null?"—":stats.best+"%";
+  const rc=document.getElementById("randomCount");
+  rc.max=Math.max(1,bank.length);
+  if(+rc.value>bank.length) rc.value=bank.length;
+}
+function displayNumber(q){
+  const same = bank.filter(x=>x.number===q.number).length;
+  return same>1 ? `№${q.number} · вариант ${q.numberVariant||1}` : `№${q.number}`;
+}
+
+function startQuiz(mode,count,shuffleOptions=true,sourceItems=null){
+  if(!bank.length){ toast("Банк вопросов пуст."); return; }
+  let items;
+  if(sourceItems){ items=clone(sourceItems); }
+  else if(mode==="all"){ items=clone(bank); }
+  else{
+    const n=Math.max(1,Math.min(bank.length,Number(count)||20));
+    items=shuffled(bank).slice(0,n).map(clone);
+  }
+  items = items.map(q=>{
+    q._displayOptions = q.options.map((o,i)=>({...o,_idx:i}));
+    if(shuffleOptions) q._displayOptions=shuffled(q._displayOptions);
+    q._selected=[];
+    q._checked=false;
+    q._isCorrect=false;
+    return q;
+  });
+  quiz={mode,items,index:0,score:0,shuffleOptions};
+  showView("quizView");
+  renderQuestion();
+}
+function renderQuestion(){
+  const q=quiz.items[quiz.index];
+  const total=quiz.items.length;
+  const correctCount=q.options.filter(o=>o.correct).length;
+  document.getElementById("quizModeLabel").textContent=quiz.mode==="all"?"Все вопросы":quiz.mode==="mistakes"?"Работа над ошибками":"Рандом";
+  document.getElementById("quizProgressLabel").textContent=`${quiz.index+1} / ${total}`;
+  document.getElementById("quizScoreLabel").textContent=`Верно: ${quiz.score}`;
+  document.getElementById("progressBar").style.width=`${((quiz.index+1)/total)*100}%`;
+  document.getElementById("questionNumber").textContent=displayNumber(q);
+  document.getElementById("questionText").textContent=q.text;
+  document.getElementById("multiNote").style.display=correctCount>1?"block":"none";
+  const options=document.getElementById("options"); options.innerHTML="";
+  q._displayOptions.forEach((o,displayIndex)=>{
+    const btn=document.createElement("button");
+    btn.type="button";
+    btn.className="option"+(correctCount>1?" multi":"");
+    const isSel=q._selected.includes(o._idx);
+    if(isSel) btn.classList.add("selected");
+    if(q._checked){
+      if(o.correct && isSel) btn.classList.add("correct");
+      else if(!o.correct && isSel) btn.classList.add("wrong");
+      else if(o.correct && !isSel) btn.classList.add("missed");
+    }
+    const markerText=q._checked ? (o.correct?"✓":(isSel?"×":"")) : (isSel?"✓":"");
+    btn.innerHTML=`<span class="marker">${markerText}</span><span>${escapeHtml(o.text)}</span>`;
+    btn.disabled=q._checked;
+    btn.addEventListener("click",()=>{
+      if(q._checked)return;
+      if(correctCount>1){
+        if(q._selected.includes(o._idx)) q._selected=q._selected.filter(x=>x!==o._idx);
+        else q._selected.push(o._idx);
+      }else q._selected=[o._idx];
+      renderQuestion();
+    });
+    options.appendChild(btn);
+  });
+
+  const fb=document.getElementById("feedback");
+  fb.className="feedback";
+  if(q._checked){
+    fb.className="feedback show "+(q._isCorrect?"good":"bad");
+    const correctTexts=q.options.filter(o=>o.correct).map(o=>o.text);
+    fb.textContent=q._isCorrect ? "Верно." : "Правильный ответ: "+correctTexts.join("; ");
+  }
+  document.getElementById("checkAnswer").style.display=q._checked?"none":"inline-block";
+  document.getElementById("nextQuestion").style.display=q._checked?"inline-block":"none";
+  document.getElementById("nextQuestion").textContent=quiz.index===total-1?"Результат":"Дальше";
+  document.getElementById("prevQuestion").disabled=quiz.index===0;
+}
+function checkAnswer(){
+  const q=quiz.items[quiz.index];
+  if(!q._selected.length){ toast("Сначала выбери ответ."); return; }
+  const selected=new Set(q._selected);
+  const correct=new Set(q.options.map((o,i)=>o.correct?i:null).filter(i=>i!==null));
+  q._isCorrect=setsEqual(selected,correct);
+  q._checked=true;
+  if(q._isCorrect) quiz.score++;
+  renderQuestion();
+}
+function nextQuestion(){
+  if(quiz.index>=quiz.items.length-1){ finishQuiz(); return; }
+  quiz.index++; renderQuestion();
+}
+function prevQuestion(){
+  if(quiz.index>0){ quiz.index--; renderQuestion(); }
+}
+function finishQuiz(){
+  const total=quiz.items.length;
+  const checked=quiz.items.filter(q=>q._checked).length;
+  if(checked<total){
+    const go=confirm(`Проверено ${checked} из ${total}. Завершить попытку сейчас?`);
+    if(!go) return;
+  }
+  const correct=quiz.items.filter(q=>q._checked&&q._isCorrect).length;
+  const wrong=total-correct;
+  const pct=total?Math.round(correct/total*100):0;
+  stats.attempts=(stats.attempts||0)+1;
+  stats.best=stats.best==null?pct:Math.max(stats.best,pct);
+  saveStats(); refreshHome();
+
+  document.getElementById("scorePercent").textContent=pct+"%";
+  document.getElementById("scoreRing").style.setProperty("--score",pct);
+  document.getElementById("resultCorrect").textContent=correct;
+  document.getElementById("resultWrong").textContent=wrong;
+  document.getElementById("resultTotal").textContent=total;
+  const mistakes=quiz.items.filter(q=>!q._checked||!q._isCorrect);
+  const retry=document.getElementById("retryMistakes");
+  retry.disabled=!mistakes.length;
+  retry.onclick=()=>startQuiz("mistakes",mistakes.length,quiz.shuffleOptions,mistakes);
+  showView("resultView");
+}
+
+function renderBank(){
+  const term=normalizeText(document.getElementById("bankSearch").value).toLowerCase();
+  const filtered=bank.filter(q=>{
+    if(!term)return true;
+    return q.text.toLowerCase().includes(term)||q.options.some(o=>o.text.toLowerCase().includes(term))||String(q.number).includes(term);
+  });
+  const pages=Math.max(1,Math.ceil(filtered.length/PAGE_SIZE));
+  bankPage=Math.min(bankPage,pages);
+  const start=(bankPage-1)*PAGE_SIZE;
+  const items=filtered.slice(start,start+PAGE_SIZE);
+  const list=document.getElementById("bankList"); list.innerHTML="";
+  items.forEach(q=>{
+    const item=document.createElement("div"); item.className="bank-item";
+    const correct=q.options.filter(o=>o.correct).map(o=>o.text).join("; ");
+    item.innerHTML=`<div><div class="meta">${escapeHtml(displayNumber(q))} · ${q.options.length} вариантов · правильных: ${q.options.filter(o=>o.correct).length}</div>
+      <div class="text">${escapeHtml(q.text)}</div><div class="small" style="margin-top:5px">Ответ: ${escapeHtml(correct)}</div></div>
+      <div class="actions"><button class="btn ghost edit">Изменить</button><button class="btn danger del">Удалить</button></div>`;
+    item.querySelector(".edit").onclick=()=>openEditor(q.id);
+    item.querySelector(".del").onclick=()=>deleteQuestion(q.id);
+    list.appendChild(item);
+  });
+  document.getElementById("bankCount").textContent=`Найдено: ${filtered.length} · всего в банке: ${bank.length}`;
+  document.getElementById("pageLabel").textContent=`Страница ${bankPage} из ${pages}`;
+  document.getElementById("prevPage").disabled=bankPage<=1;
+  document.getElementById("nextPage").disabled=bankPage>=pages;
+}
+function openEditor(id=null){
+  editingId=id;
+  const q=id?bank.find(x=>x.id===id):null;
+  document.getElementById("editorTitle").textContent=q?"Изменить вопрос":"Добавить вопрос";
+  document.getElementById("editText").value=q?q.text:"";
+  const box=document.getElementById("editorOptions"); box.innerHTML="";
+  (q?q.options:[{text:"",correct:false},{text:"",correct:true},{text:"",correct:false}]).forEach(o=>addEditorOption(o.text,o.correct));
+  document.getElementById("editorBackdrop").classList.add("show");
+}
+function addEditorOption(text="",correct=false){
+  const row=document.createElement("div"); row.className="editor-option";
+  row.innerHTML=`<input type="checkbox" class="correct" ${correct?"checked":""} title="Правильный ответ">
+    <input type="text" class="opttext" placeholder="Вариант ответа" value="${escapeHtml(text)}">
+    <button class="icon-btn remove" title="Удалить">−</button>`;
+  row.querySelector(".remove").onclick=()=>{ if(document.querySelectorAll(".editor-option").length<=2){toast("Нужно минимум два варианта.");return;} row.remove(); };
+  document.getElementById("editorOptions").appendChild(row);
+}
+function saveEditedQuestion(){
+  const text=normalizeText(document.getElementById("editText").value);
+  const rows=[...document.querySelectorAll(".editor-option")];
+  const options=rows.map(r=>({text:normalizeText(r.querySelector(".opttext").value),correct:r.querySelector(".correct").checked})).filter(o=>o.text);
+  if(!text){toast("Введи текст вопроса.");return;}
+  if(options.length<2){toast("Нужно минимум два непустых варианта.");return;}
+  if(!options.some(o=>o.correct)){toast("Отметь хотя бы один правильный ответ.");return;}
+  if(editingId){
+    const idx=bank.findIndex(q=>q.id===editingId);
+    bank[idx]={...bank[idx],text,options};
+  }else{
+    const maxNum=bank.reduce((m,q)=>Math.max(m,Number(q.number)||0),0);
+    bank.push({id:uid(),number:maxNum+1,numberVariant:1,text,options,origin:"custom"});
+  }
+  saveBank(); closeModal("editorBackdrop"); renderBank(); toast("Сохранено.");
+}
+function deleteQuestion(id){
+  const q=bank.find(x=>x.id===id); if(!q)return;
+  if(!confirm(`Удалить вопрос «${q.text.slice(0,90)}${q.text.length>90?"…":""}»?`))return;
+  bank=bank.filter(x=>x.id!==id); saveBank(); renderBank();
+}
+function closeModal(id){document.getElementById(id).classList.remove("show");}
+
+function parseBulkText(input){
+  const lines=String(input).replace(/\r/g,"").split("\n");
+  const out=[]; let q=null, opt=null;
+  const qre=/^\s*(\d+)\.\s*(.*)$/;
+  const ore=/^\s*(\d+)\)\s*(.*)$/;
+  const flush=()=>{if(q){ if(q.text&&q.options.length>=2&&q.options.some(o=>o.correct))out.push(q); q=null; opt=null; }};
+  for(const raw of lines){
+    const line=raw.trimEnd(); if(!line.trim()) continue;
+    let m=line.match(qre);
+    if(m){
+      const candidate=Number(m[1]);
+      const looksLikeNextQuestion=!q || candidate===q.number || candidate===q.number+1;
+      if(looksLikeNextQuestion){
+        flush(); q={number:candidate,numberVariant:1,text:normalizeText(m[2]),options:[]}; opt=null; continue;
+      }
+    }
+    m=line.match(ore);
+    if(m&&q){
+      let t=m[2]; const correct=t.includes("*"); t=normalizeText(t.replace(/\*/g,""));
+      opt={text:t,correct}; q.options.push(opt); continue;
+    }
+    if(!q)continue;
+    let s=line.trim();
+    if(opt){
+      if(s.includes("*")){opt.correct=true;s=s.replace(/\*/g,"");}
+      opt.text=normalizeText(opt.text+" "+s);
+    }else q.text=normalizeText(q.text+" "+s);
+  }
+  flush();
+  return out;
+}
+function addBulk(){
+  const parsed=parseBulkText(document.getElementById("bulkText").value);
+  if(!parsed.length){toast("Не получилось распознать вопросы. Проверь формат.");return;}
+  const existingMax=bank.reduce((m,q)=>Math.max(m,Number(q.number)||0),0);
+  parsed.forEach((q,i)=>{
+    const sourceNum=q.number;
+    q.id=uid(); q.origin="custom";
+    // Keep pasted number only if it does not collide; otherwise append after the current bank.
+    if(bank.some(x=>x.number===q.number)) q.number=existingMax+i+1;
+    q.numberVariant=1;
+    q.importedNumber=sourceNum;
+    bank.push(q);
+  });
+  saveBank(); closeModal("bulkBackdrop"); document.getElementById("bulkText").value=""; renderBank();
+  toast(`Добавлено вопросов: ${parsed.length}`);
+}
+function exportJson(){
+  const blob=new Blob([JSON.stringify(bank,null,2)],{type:"application/json;charset=utf-8"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="gp_questions_backup.json"; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+async function importJson(file){
+  if(!file)return;
+  try{
+    const parsed=JSON.parse(await file.text());
+    if(!Array.isArray(parsed)||!parsed.length)throw new Error("not array");
+    const clean=parsed.map((q,i)=>({
+      id:q.id||uid(), number:Number(q.number)||i+1, numberVariant:Number(q.numberVariant)||1,
+      text:normalizeText(q.text), origin:q.origin||"import",
+      options:(q.options||[]).map(o=>({text:normalizeText(o.text),correct:!!o.correct})).filter(o=>o.text)
+    }));
+    if(clean.some(q=>!q.text||q.options.length<2||!q.options.some(o=>o.correct))) throw new Error("invalid question");
+    const replace=confirm("ОК — заменить текущий банк импортированным.\nОтмена — добавить импортированные вопросы к текущему банку.");
+    bank=replace?clean:[...bank,...clean.map(q=>({...q,id:uid()}))];
+    saveBank(); bankPage=1; renderBank(); toast("Импорт завершён.");
+  }catch(e){toast("Не удалось импортировать JSON: неверный формат.");}
+  document.getElementById("importFile").value="";
+}
+
+document.getElementById("startAll").onclick=()=>startQuiz("all",bank.length,document.getElementById("shuffleAllOptions").checked);
+document.getElementById("startRandom").onclick=()=>startQuiz("random",+document.getElementById("randomCount").value,document.getElementById("shuffleRandomOptions").checked);
+document.getElementById("checkAnswer").onclick=checkAnswer;
+document.getElementById("nextQuestion").onclick=nextQuestion;
+document.getElementById("prevQuestion").onclick=prevQuestion;
+document.getElementById("quitQuiz").onclick=finishQuiz;
+document.getElementById("homeBtn").onclick=()=>showView("homeView");
+document.getElementById("bankBtn").onclick=()=>{bankPage=1;renderBank();showView("bankView");};
+document.getElementById("resultHome").onclick=()=>showView("homeView");
+document.getElementById("newRandom").onclick=()=>startQuiz("random",Math.min(20,bank.length),true);
+document.getElementById("addQuestion").onclick=()=>openEditor();
+document.getElementById("addOption").onclick=()=>addEditorOption();
+document.getElementById("saveQuestion").onclick=saveEditedQuestion;
+document.getElementById("bulkAddBtn").onclick=()=>document.getElementById("bulkBackdrop").classList.add("show");
+document.getElementById("parseBulk").onclick=addBulk;
+document.getElementById("exportBtn").onclick=exportJson;
+document.getElementById("importFile").onchange=e=>importJson(e.target.files[0]);
+document.getElementById("bankSearch").oninput=()=>{bankPage=1;renderBank();};
+document.getElementById("prevPage").onclick=()=>{bankPage--;renderBank();};
+document.getElementById("nextPage").onclick=()=>{bankPage++;renderBank();};
+document.getElementById("resetBank").onclick=()=>{
+  if(confirm("Вернуть исходные 184 вопроса из PDF? Все добавленные и отредактированные вопросы в этом браузере будут удалены.")){
+    bank=clone(DEFAULT_QUESTIONS); saveBank(); bankPage=1; renderBank(); toast("Исходный банк восстановлен.");
+  }
+};
+document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>closeModal(b.dataset.close));
+document.querySelectorAll(".modal-backdrop").forEach(m=>m.addEventListener("click",e=>{if(e.target===m)closeModal(m.id);}));
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape") document.querySelectorAll(".modal-backdrop.show").forEach(m=>closeModal(m.id));
+  if(!document.getElementById("quizView").classList.contains("active")||!quiz)return;
+  if(e.key==="Enter"){
+    const q=quiz.items[quiz.index];
+    if(q._checked) nextQuestion(); else checkAnswer();
+  }
+});
+refreshHome();
+</script>
+</body>
+</html>
